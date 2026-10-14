@@ -75,6 +75,7 @@
         <button type="button" class="icon-btn burger" id="burger" aria-expanded="false" aria-controls="nav" data-i18n-aria="menu"><i class="ri-menu-line" aria-hidden="true"></i></button>
       </div>
     </div>
+    <span class="progress" id="progress"></span>
   </header>
   <div class="overlay" id="overlay"></div>
 
@@ -97,6 +98,8 @@
         </div>
         <div class="hero__media">
           <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80" data-i18n-alt="heroImgAlt" alt="" />
+          <span class="bubble bubble--1" lang="en" dir="ltr" aria-hidden="true">Hello! 👋</span>
+          <span class="bubble bubble--2" lang="en" dir="ltr" aria-hidden="true">I can do it! 💪</span>
           <div class="hero__badge">
             <i class="ri-calendar-event-line" aria-hidden="true"></i>
             <div><small data-i18n="heroNext"></small><b data-i18n="heroDate"></b></div>
@@ -105,6 +108,11 @@
       </div>
     </section>
 
+    <!-- Phrase ribbon (decorative) -->
+    <div class="ticker-wrap" aria-hidden="true">
+      <div class="ticker" dir="ltr"><div class="ticker__track" id="ticker"></div></div>
+    </div>
+
     <!-- Why us -->
     <section class="section">
       <div class="container reveal">
@@ -112,7 +120,7 @@
           <span class="chip" data-i18n="whyTag"></span>
           <h2 data-i18n="whyTitle"></h2>
         </div>
-        <div class="features" id="features"></div>
+        <div class="features stagger" id="features"></div>
       </div>
     </section>
 
@@ -124,7 +132,7 @@
           <h2 data-i18n="coursesTitle"></h2>
           <p data-i18n="coursesText"></p>
         </div>
-        <div class="courses" id="courses"></div>
+        <div class="courses stagger" id="courses"></div>
       </div>
     </section>
 
@@ -136,7 +144,7 @@
           <h2 data-i18n="levelsTitle"></h2>
           <p data-i18n="levelsText"></p>
         </div>
-        <ol class="levels" id="levels"></ol>
+        <ol class="levels stagger" id="levels"></ol>
         <div class="levels__cta">
           <a href="#test" class="btn btn--ghost"><i class="ri-survey-line" aria-hidden="true"></i><span data-i18n="levelsCta"></span></a>
         </div>
@@ -150,7 +158,7 @@
           <span class="chip" data-i18n="testTag"></span>
           <h2 class="h2" data-i18n="testTitle"></h2>
           <p data-i18n="testText"></p>
-          <ul class="perks">
+          <ul class="perks stagger">
             <li><i class="ri-timer-line" aria-hidden="true"></i><span data-i18n="perk1"></span></li>
             <li><i class="ri-gift-line" aria-hidden="true"></i><span data-i18n="perk2"></span></li>
             <li><i class="ri-bar-chart-2-line" aria-hidden="true"></i><span data-i18n="perk3"></span></li>
@@ -167,7 +175,7 @@
           <span class="chip" data-i18n="stepsTag"></span>
           <h2 data-i18n="stepsTitle"></h2>
         </div>
-        <ol class="steps" id="steps"></ol>
+        <ol class="steps stagger" id="steps"></ol>
       </div>
     </section>
 
@@ -178,7 +186,7 @@
           <span class="chip" data-i18n="reviewsTag"></span>
           <h2 data-i18n="reviewsTitle"></h2>
         </div>
-        <div class="reviews" id="reviews"></div>
+        <div class="reviews stagger" id="reviews"></div>
       </div>
     </section>
 
@@ -189,7 +197,7 @@
           <span class="chip" data-i18n="pricesTag"></span>
           <h2 data-i18n="pricesTitle"></h2>
         </div>
-        <div class="plans" id="plans"></div>
+        <div class="plans stagger" id="plans"></div>
         <p class="plans__note"><i class="ri-information-line" aria-hidden="true"></i> <span data-i18n="pricesNote"></span></p>
       </div>
     </section>
@@ -201,7 +209,7 @@
           <span class="chip" data-i18n="faqTag"></span>
           <h2 data-i18n="faqTitle"></h2>
         </div>
-        <div class="faq" id="faqList"></div>
+        <div class="faq stagger" id="faqList"></div>
         <div class="faq__more">
           <p data-i18n="faqMore"></p>
           <a href="#" class="btn btn--wa"><i class="ri-whatsapp-line" aria-hidden="true"></i><span data-i18n="waBtn"></span></a>

@@ -125,6 +125,18 @@ const S = {
 };
 
 const DATA = {
+  /* The moving ribbon under the hero always shows both languages. */
+  phrases: [
+    ["Hello!", "مرحبًا!"],
+    ["Thank you", "شكرًا"],
+    ["Good morning", "صباح الخير"],
+    ["How are you?", "كيف حالك؟"],
+    ["Nice to meet you", "سُررتُ بلقائك"],
+    ["See you soon", "أراك قريبًا"],
+    ["Well done!", "أحسنت!"],
+    ["I can speak English", "أستطيع التحدّث بالإنجليزية"],
+  ],
+
   features: [
     { icon: "group-line", title: ["Small classes", "صفوف صغيرة"], text: ["Only 8 students in each class, so everyone speaks.", "8 طلاب فقط في كل صف، لذلك يتحدّث الجميع."] },
     { icon: "user-star-line", title: ["Certified teachers", "معلّمون معتمدون"], text: ["Qualified teachers with many years of experience.", "معلّمون مؤهَّلون ولديهم خبرة سنوات طويلة."] },

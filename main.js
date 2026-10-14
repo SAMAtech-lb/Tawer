@@ -2,6 +2,7 @@
 const $ = (id) => document.getElementById(id);
 const root = document.documentElement;
 const U = (id, w = 800) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+const calm = matchMedia("(prefers-reduced-motion: reduce)");
 const icon = (name, cls = "") => `<i class="ri-${name} ${cls}" aria-hidden="true"></i>`;
 const store = {
   get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
@@ -27,6 +28,13 @@ const applyStatic = () => {
 };
 
 /* ---------- Sections ---------- */
+const renderTicker = () => {
+  // Written twice so the loop is seamless (the track slides by exactly half its width).
+  const items = DATA.phrases.map(([en, ar]) => `<span class="ticker__item"><b lang="en">${en}</b><span lang="ar" dir="rtl">${ar}</span></span>`).join("");
+  $("ticker").innerHTML = items + items;
+};
+
+
 const renderFeatures = () => {
   $("features").innerHTML = DATA.features.map((f) => `
     <article class="feat">${icon(f.icon)}<h3>${tr(f.title)}</h3><p>${tr(f.text)}</p></article>`).join("");
@@ -132,7 +140,7 @@ const renderQuiz = () => {
         <p class="quiz__your">${t("quizYour")}</p>
         <div class="quiz__lvl">${lv.code}</div>
         <h3>${tr(lv.name)}</h3>
-        <div class="ladder">${DATA.levels.map((x, k) => `<span class="${k < quiz.level ? "done" : k === quiz.level ? "now" : ""}">${x.code}</span>`).join("")}</div>
+        <div class="ladder">${DATA.levels.map((x, k) => `<span style="--i:${k}" class="${k < quiz.level ? "done" : k === quiz.level ? "now" : ""}">${x.code}</span>`).join("")}</div>
         <div class="quiz__rec">${icon("lightbulb-flash-line")}<div><small>${t("quizRec")}</small><b>${tr(DATA.quizRec[quiz.level])}</b></div></div>
         <p class="quiz__note">${t("quizNote")}</p>
         <div class="quiz__actions">
@@ -168,7 +176,26 @@ $("quiz").addEventListener("click", (e) => {
   }
   box.classList.remove("anim"); void box.offsetWidth; box.classList.add("anim");
   renderQuiz();
+  if (quiz.step === "result") confetti(box);
 });
+
+const confetti = (box) => {
+  if (calm.matches) return;
+  const colors = ["#5b2bd1", "#ff7a1a", "#1cb0f6", "#58cc02", "#ffc800", "#ff86d0"];
+  for (let k = 0; k < 40; k++) {
+    const c = document.createElement("i");
+    c.className = "confetti";
+    c.style.cssText = `left:${Math.random() * 100}%;background:${colors[k % colors.length]};` +
+      `--x:${Math.random() * 160 - 80}px;--r:${360 + Math.random() * 540}deg;` +
+      `--d:${1.4 + Math.random()}s;--delay:${Math.random() * 0.3}s`;
+    box.append(c);
+    setTimeout(() => c.remove(), 3000);
+  }
+};
+
+/* Give each card in a .stagger grid its turn to appear. */
+const stagger = () => document.querySelectorAll(".stagger").forEach((list) =>
+  [...list.children].forEach((el, i) => el.style.setProperty("--i", i)));
 
 /* ---------- Theme ---------- */
 const setTheme = (theme) => {
@@ -192,15 +219,21 @@ const renderAll = () => {
   applyStatic();
   renderFeatures(); renderCourses(); renderLevels(); renderSteps();
   renderReviews(); renderPlans(); renderFaq(); renderFormOptions(); renderQuiz();
+  stagger();
   setTheme(root.dataset.theme);
   $("formMsg").className = "form__msg";
 };
 $("langBtn").addEventListener("click", () => {
   lang = lang === "ar" ? "en" : "ar";
   store.set("lang", lang);
-  root.lang = lang;
-  root.dir = lang === "ar" ? "rtl" : "ltr";
-  renderAll();
+  // Fade the page out, swap the language, fade back in.
+  root.classList.add("switching");
+  setTimeout(() => {
+    root.lang = lang;
+    root.dir = lang === "ar" ? "rtl" : "ltr";
+    renderAll();
+    root.classList.remove("switching");
+  }, calm.matches ? 0 : 180);
 });
 
 /* ---------- Header & mobile menu ---------- */
@@ -216,7 +249,11 @@ burger.addEventListener("click", () => setNav(!nav.classList.contains("open")));
 $("overlay").addEventListener("click", () => setNav(false));
 nav.addEventListener("click", (e) => { if (e.target.closest("a")) setNav(false); });
 addEventListener("keydown", (e) => { if (e.key === "Escape") setNav(false); });
-const onScroll = () => $("header").classList.toggle("scrolled", scrollY > 10);
+const onScroll = () => {
+  $("header").classList.toggle("scrolled", scrollY > 10);
+  const max = document.documentElement.scrollHeight - innerHeight;
+  $("progress").style.setProperty("--p", max > 0 ? Math.min(scrollY / max, 1) : 0);
+};
 addEventListener("scroll", onScroll, { passive: true });
 onScroll();
 
@@ -232,6 +269,7 @@ $("trialForm").addEventListener("submit", (e) => {
   const bad = fields.filter((i) => !i.value.trim());
   fields.forEach((i) => i.classList.toggle("err", bad.includes(i)));
   if (bad.length) {
+    f.classList.remove("shake"); void f.offsetWidth; f.classList.add("shake");
     msg.className = "form__msg bad";
     msg.textContent = t("fErr");
     bad[0].focus();
@@ -243,6 +281,7 @@ $("trialForm").addEventListener("submit", (e) => {
 });
 
 /* ---------- Start ---------- */
+renderTicker();
 renderAll();
 const io = new IntersectionObserver((entries) => entries.forEach((en) => {
   if (!en.isIntersecting) return;
