@@ -10,7 +10,7 @@ Keep entries short. This file is the shared context for anyone (human or AI) wor
 After **any** change that affects how the site looks (HTML, CSS, content, layout), before reporting it as done:
 1. Serve the site: `python -m http.server 8765 --bind 127.0.0.1` (from the repo root).
 2. Look at the real rendered page with the **agent-browser** skill/CLI
-   (`agent-browser open http://127.0.0.1:8765/index.html`, then `agent-browser screenshot <file>`).
+   (`agent-browser open http://127.0.0.1:8765/public/index.html`, then `agent-browser screenshot <file>`).
    Check desktop **and** a mobile/tablet width (`agent-browser set viewport 390 844`).
 3. Run the **ui-taste** skill (`/ui-taste`, in [.claude/skills/ui-taste/](.claude/skills/ui-taste/))
    as a review of the changed area. Use its polish/audit playbooks, and fix material issues it finds.
@@ -33,18 +33,23 @@ Static marketing website for **Tawer Academy**, an English language academy
 Business English, Corporate Training; in-class and online).
 
 ### Stack
-- Plain HTML + CSS + vanilla JS. No build step, no framework, no package.json.
-- Open [index.html](index.html) directly in a browser to view.
-- Fonts: Google Fonts — Lexend (headings), DM Sans (body).
-- Icons: Remix Icon 4.5.0 via jsDelivr CDN (`ri-*` classes).
-- Images: Unsplash, built by the `U(id, w)` helper in the inline script.
+- Plain HTML + CSS + vanilla JS on the front end, no build step. Hosted on **Cloudflare Pages** with a
+  password-protected **admin dashboard** (`/admin`) that edits the site text. Deploy steps are in [README.md](README.md).
+- Local preview: serve the repo root and open `/public/index.html`. The page then shows the default
+  content from `content.js`. The `/admin` login and saving need Cloudflare (`functions/`), which doesn't run locally.
+- Fonts: Google Fonts, Lexend (headings) and DM Sans (body). Icons: Remix Icon 4.5.0 (`ri-*`).
+- Images: Unsplash photo IDs, turned into URLs by the `U(id, w)` helper in `site.js`.
 
 ### Files
-- [index.html](index.html) — all markup, SEO meta, JSON-LD (EducationalOrganization + FAQPage),
-  and one inline `<script>` near the bottom holding the data arrays
-  (`LEVELS`, `COURSES`, `TEACHERS`, `REVIEWS`, `QUIZ`, …) and the page logic.
-- [style.css](style.css) — all styles. Design tokens in `:root` (see *Color palette*).
-- [README.md](README.md) — placeholder only.
+- [public/index.html](public/index.html): page markup. Text elements carry `data-c="group.field"` and are filled from content.
+- [public/content.js](public/content.js): **all default text and data** (`window.TAWER_DEFAULT`). Edit content here.
+  Formatting: `[[word]]` = highlight, `**word**` = bold.
+- [public/site.js](public/site.js): renders lists and sections from the content and runs the page logic.
+- [public/style.css](public/style.css): all styles. Design tokens are in `:root` (see *Color palette*).
+- [public/admin/](public/admin/): the dashboard. **Any new content field or section needs an editor in `admin.js`.**
+- [functions/](functions/): Cloudflare server code. `_shared/lib.js` `CONTENT_GROUPS` lists the top-level content
+  groups allowed on save. A new group has to be added there too.
+- Adding a section touches 5 places: content.js, index.html, site.js, admin.js and CONTENT_GROUPS.
 
 ### Page sections (in order)
 hero → strip (exam prep) → #about (founding story + 4 value ticks) → #levels → #courses →
@@ -55,8 +60,8 @@ There is **no team/teachers section** (removed on purpose).
 
 ### Content status
 All names, stories, testimonials, numbers and contact details are **dummy placeholder data**.
-Swap in real content before launch. Story and testimonial data live in `STORIES` and `REVIEWS`
-in the inline script.
+Swap in real content before launch, either in [public/content.js](public/content.js) or through the `/admin`
+dashboard once deployed. Stories are in `stories.items`, testimonials in `reviews.items`.
 
 ### Messaging priorities (from the client)
 - Value proposition: **customised curriculum updated every term**, **build your own course**,
@@ -83,7 +88,7 @@ in the inline script.
 - Browser defaults are themed too: `::selection` (gold/purple), `:focus-visible` (orange outline),
   `accent-color`/`caret-color` (purple), form placeholders (slate tint).
 - No darker hover shades exist: hovers swap between palette colors (purple btn → orange, orange btn → purple, on-purple → gold with purple text).
-- The favicon and `theme-color` in [index.html](index.html) use the same palette.
+- The favicon and `theme-color` in [public/index.html](public/index.html) use the same palette.
 
 ### Conventions
 - Content (courses, teachers, reviews, quiz questions) lives in the JS data arrays — edit there,
@@ -134,3 +139,11 @@ in the inline script.
   touch screens and with keyboards. With reduced motion turned on, it becomes a static row the user scrolls
   by hand. ui-taste check (polish playbook, agent-browser at 1440 and 390 wide): no overflow, no console
   errors, all images load. The issue it found was no way to pause on touch, so the pause button was added and verified.
+- **2026-11-09** — Merged `origin/main` into `ahmad_frontend_changes`. Main had restructured the site into
+  `public/` (content.js + site.js + admin dashboard on Cloudflare Pages). Local work was first saved as commit
+  `053e038`, then ported into the new structure: palette CSS (merged automatically); about storyTitle/storyText
+  replacing vision/mission; new ticks; 3 why items; `teachers` replaced by a `stories` group (content, page,
+  renderer and an admin "Success stories" editor); testimonials relabelled with new quotes; footer link points to
+  `#stories`. `teachers` stays in `CONTENT_GROUPS` (legacy) so content saved before the change can still be
+  saved again. ui-taste check (agent-browser at 1440 and 390 wide): all sections render, no console errors, no
+  sideways overflow, all images load.
