@@ -1,0 +1,11 @@
+{
+  "name": "tawer-academy",
+  "private": true,
+  "description": "Tawer Academy website + admin content dashboard (Cloudflare Pages)",
+  "scripts": {
+    "dev": "wrangler pages dev public --kv CONTENT --compatibility-date=2024-11-01 --port 8788"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
