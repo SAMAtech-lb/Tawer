@@ -63,15 +63,13 @@ window.TAWER_DEFAULT = {
 
   about: {
     label: "About Tawer Academy",
-    title: "A place where English stops being a subject and becomes [[your voice]].",
-    text: "Tawer means growth, and that's what we're about. We started with one classroom and a simple idea: people learn a language by **using it**, not by memorising rules. Today our teachers guide thousands of students through every level, from complete beginners to professionals preparing for IELTS or a job abroad.",
+    title: "Built by teachers who wanted English to [[feel alive]].",
+    text: "Tawer means growth. We help learners of every age turn English from a school subject into a skill they **actually use**, in class, at work and abroad.",
     years: 9,
     yearsText: "years\nteaching English",
-    visionTitle: "Our vision",
-    visionText: "To be the most trusted English academy in the region, where every learner leaves able to study, work and live in English.",
-    missionTitle: "Our mission",
-    missionText: "Give every student a clear level, a caring teacher and real speaking time in every single lesson.",
-    ticks: ["Native-level & CELTA-certified teachers", "CEFR-aligned levels and certificates", "Max 8 students per class", "Free speaking clubs every week"]
+    storyTitle: "Our story, since 2017",
+    storyText: "It started with two teachers, one rented classroom and six students who were tired of memorising grammar tables. We built every lesson around real conversation, and word spread. Today Tawer teaches learners from age 6 to 60, in class and live online.",
+    ticks: ["Lessons built around speaking", "Progress you can measure", "Teachers who know your name", "A level for every age"]
   },
 
   levels: {
@@ -153,14 +151,11 @@ window.TAWER_DEFAULT = {
 
   why: {
     label: "Why Tawer",
-    title: "Built for [[real progress]], not just homework",
+    title: "English that fits [[your goals]], not a textbook",
     items: [
-      { icon: "ri-group-line", title: "Small classes", text: "Maximum 8 students, so you speak for at least 20 minutes in every lesson." },
-      { icon: "ri-shield-star-line", title: "Certified teachers", text: "CELTA / TEFL-qualified teachers with 5+ years' experience on average." },
-      { icon: "ri-computer-line", title: "In-class or online", text: "Same teacher, same materials. Switch between campus and live online any week." },
-      { icon: "ri-chat-voice-line", title: "Weekly speaking clubs", text: "Free conversation sessions on real topics: travel, work, films and current events." },
-      { icon: "ri-line-chart-line", title: "Progress reports", text: "Monthly reports on speaking, writing, listening and reading, shared with parents for kids." },
-      { icon: "ri-book-open-line", title: "Materials included", text: "Course books, our online practice portal and recorded lessons at no extra cost." }
+      { icon: "ri-refresh-line", title: "A curriculum that keeps up", text: "Customised to each group and updated every term with fresh topics, real-world materials and the latest exam formats." },
+      { icon: "ri-puzzle-line", title: "Build your own course", text: "Pick the skills, schedule and pace you need, from exam prep to business meetings, and we shape the course around you." },
+      { icon: "ri-live-line", title: "Live online, from anywhere", text: "Join real-time classes with your teacher and group from home, work or abroad. Same lessons, no commute." }
     ],
     stats: [
       { value: 2500, suffix: "+", label: "Students taught" },
@@ -170,41 +165,50 @@ window.TAWER_DEFAULT = {
     ]
   },
 
-  teachers: {
-    label: "Our teachers",
-    title: "Friendly experts who [[get you talking]]",
+  // Placeholder (dummy) stories and testimonials: replace with real ones before launch.
+  stories: {
+    label: "Success stories",
+    title: "Real students, [[real results]]",
+    text: "Every learner starts somewhere. Here's where a few of them ended up.",
     items: [
-      { name: "Rania Saleh", role: "Head of Academics · CELTA, DELTA", img: "1573496359142-b8d87734a5a2", tag: "IELTS examiner trainer" },
-      { name: "James Whitfield", role: "Business English · CELTA", img: "1506794778202-cad84cf45f1d", tag: "12 years teaching" },
-      { name: "Lina Farah", role: "Kids & Teens · TEFL", img: "1580489944761-15a19d654956", tag: "Young learners specialist" },
-      { name: "Omar Nasser", role: "IELTS & TOEFL · MA TESOL", img: "1472099645785-5658abf4ff4e", tag: "Band 9 speaker" }
+      { name: "Lea N.", role: "Started at 10 · now 14", img: "1534528741775-53994a69daeb", result: "8.0", resultLabel: "IELTS band at 14", text: "Joined English for Kids at 10 with almost no English. Four years and four levels later, she scored IELTS Academic band 8.0." },
+      { name: "Sara H.", role: "University student", img: "1494790108377-be9c29b29330", result: "7.5", resultLabel: "IELTS, first attempt", text: "Needed band 7 for a master's abroad. Eight weeks of mock tests and marked writing got her 7.5." },
+      { name: "Hadi Y.", role: "Engineer, live online", img: "1500648767791-00dcc994a43e", result: "A2 → B2", resultLabel: "in 11 months", text: "Studied live online after work with a course built around technical English. Now leads calls with international clients." },
+      { name: "Nour A.", role: "Marketing lead", img: "1573496359142-b8d87734a5a2", result: "C1", resultLabel: "Business English", text: "Built her own course around presentations and negotiation. Six months later she was promoted to a regional role." },
+      { name: "Rami T.", role: "Pre-university, age 17", img: "1506794778202-cad84cf45f1d", result: "104", resultLabel: "TOEFL iBT", text: "Went from B1 to a TOEFL score of 104 in one year and got into his first-choice engineering programme." }
     ]
   },
 
   reviews: {
-    label: "Student stories",
-    title: "What our students [[say about us]]",
+    label: "Testimonials",
+    title: "What students and parents [[say about us]]",
     items: [
-      { name: "Sara Haddad", role: "University student · IELTS 7.5", img: "1494790108377-be9c29b29330", text: "I needed IELTS 7 for my master's application and got 7.5 on my first try. The weekly mock tests and the writing feedback made all the difference." },
       { name: "Karim Mansour", role: "Sales manager · Business English", img: "1507003211169-0a1dd7228f2d", text: "I used to avoid calls with our UK clients. After two terms I run the meetings myself. The lessons are practical, it's English I use the next day." },
       { name: "Maya K.", role: "Mother of Adam, 9", img: "1544005313-94ddf0286df2", text: "Adam actually asks to go to class! The teachers are patient and playful, and the monthly report shows exactly how he's improving." },
-      { name: "Hadi Youssef", role: "Engineer · A2 → B2", img: "1500648767791-00dcc994a43e", text: "Small classes mean you can't hide, and that's the point. I went from A2 to B2 in under a year while working full time with evening classes." }
+      { name: "Omar S.", role: "Online student · Conversation English", img: "1472099645785-5658abf4ff4e", text: "I join live from a different city most weeks because of work travel. Same group, same teacher, and the lessons never feel like a video call." },
+      { name: "Rima D.", role: "Mother of Jad, 13", img: "1580489944761-15a19d654956", text: "The curriculum changes with what the kids care about. Jad's class wrote a podcast last term, and he still talks about it at dinner." }
     ]
   },
 
   pricing: {
     label: "Pricing",
-    title: "Simple plans, [[no hidden fees]]",
-    termSave: "Save 15%",
-    note: "One term = 12 weeks. Sibling and family discounts available. Ask us!",
+    title: "Plans shaped around [[you]]",
+    text: "Every learner's plan is priced for their level, schedule and goals. These are starting prices, and we confirm your exact price before you start.",
+    note: "Your final price depends on your level, schedule and format. Ask us for your personal quote.",
+    savingsTitle: "Ways to save",
+    savings: [
+      { icon: "ri-home-heart-line", title: "Family discount", text: "Learning together? Siblings, parents and other family members studying at Tawer get a reduced rate." },
+      { icon: "ri-wallet-3-line", title: "Pay once, save more", text: "Pay for a full term or course upfront and get a better price than paying month by month." },
+      { icon: "ri-gift-line", title: "Perks instead", text: "Some offers come as extras instead of a lower price, such as **digital books**, **spelling guides** and **reserved workshop spots**." }
+    ],
     plans: [
-      { name: "Group Classes", desc: "General English in a small group", monthly: 89, term: 227, popular: false, tag: "",
+      { name: "Group Classes", desc: "General English in a small group", monthly: 89, popular: false, tag: "",
         included: ["2 lessons a week · 90 min", "Max 8 students", "Course book & online portal", "Weekly speaking club"],
         excluded: ["1-to-1 feedback sessions"] },
-      { name: "Intensive", desc: "Faster progress & exam focus", monthly: 149, term: 380, popular: true, tag: "Most popular",
+      { name: "Intensive", desc: "Faster progress & exam focus", monthly: 149, popular: true, tag: "Most popular",
         included: ["4 lessons a week · 90 min", "Max 8 students", "All materials included", "Unlimited speaking clubs", "Monthly 1-to-1 feedback"],
         excluded: [] },
-      { name: "Private 1-to-1", desc: "Fully personalised lessons", monthly: 199, term: 507, popular: false, tag: "",
+      { name: "Private 1-to-1", desc: "Fully personalised lessons", monthly: 199, popular: false, tag: "",
         included: ["8 private lessons · 60 min", "Your schedule, your topics", "IELTS / business options", "In-class or online", "Weekly progress notes"],
         excluded: [] }
     ]

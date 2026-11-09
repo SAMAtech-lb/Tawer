@@ -10,7 +10,7 @@ export const LOGIN_LOCK_SECONDS = 15 * 60;
 /* Top-level groups the content may contain (anything else is rejected on save). */
 export const CONTENT_GROUPS = [
   "seo", "contact", "social", "hero", "exams", "about", "levels", "courses", "test",
-  "how", "why", "teachers", "reviews", "pricing", "faq", "blog", "cta", "footer",
+  "how", "why", "stories", "reviews", "teachers" /* legacy, no longer shown */, "pricing", "faq", "blog", "cta", "footer",
 ];
 
 export const json = (data, status = 200, headers = {}) =>

@@ -228,16 +228,25 @@
   };
   quizStart();
 
-  /* ---------- Teachers ---------- */
-  $("teacherGrid").innerHTML = arr(C.teachers?.items).map((t) => `
-    <article class="teacher reveal">
-      <div class="teacher__img">${t.img
-        ? `<img src="${U(t.img, 500)}" alt="${esc(plain(t.name))}, English teacher at Tawer Academy" loading="lazy" />`
-        : `<div class="avatar-fallback">${esc(initials(t.name))}</div>`}
-        <div class="teacher__social"><a href="#" aria-label="${esc(plain(t.name))} on LinkedIn"><i class="ri-linkedin-fill"></i></a><a href="#" aria-label="${esc(plain(t.name))} on Instagram"><i class="ri-instagram-line"></i></a></div>
-      </div>
-      <h3>${fmt(t.name)}</h3><p>${fmt(t.role)}</p>${t.tag ? `<span>${fmt(t.tag)}</span>` : ""}
-    </article>`).join("");
+  /* ---------- Success stories (auto-scrolling row) ---------- */
+  const STORIES = arr(C.stories?.items);
+  const storyCard = (st, hidden) => `
+    <article class="story"${hidden ? ' aria-hidden="true"' : ""}>
+      <div class="story__result"><b>${fmt(st.result)}</b>${st.resultLabel ? `<span>${fmt(st.resultLabel)}</span>` : ""}</div>
+      <p>${fmt(st.text)}</p>
+      <div class="story__who">${st.img
+        ? `<img src="${U(st.img, 120)}" alt="${hidden ? "" : esc(plain(st.name))}" loading="lazy" />`
+        : `<span class="avatar-fallback avatar-fallback--sm">${esc(initials(st.name))}</span>`}<div><b>${fmt(st.name)}</b><small>${fmt(st.role)}</small></div></div>
+    </article>`;
+  // Two copies make the loop seamless: the track slides left by exactly one copy, then restarts.
+  $("storyTrack").innerHTML = STORIES.map((st) => storyCard(st, false)).join("") + STORIES.map((st) => storyCard(st, true)).join("");
+  $("storyPause").onclick = (e) => {
+    const btn = e.currentTarget, paused = btn.getAttribute("aria-pressed") !== "true";
+    btn.setAttribute("aria-pressed", paused);
+    btn.setAttribute("aria-label", (paused ? "Play" : "Pause") + " success stories");
+    btn.innerHTML = `<i class="ri-${paused ? "play" : "pause"}-line"></i>`;
+    $("storyTrack").classList.toggle("is-paused", paused);
+  };
 
   /* ---------- Testimonials slider ---------- */
   const REVIEWS = arr(C.reviews?.items);
@@ -267,28 +276,25 @@
   addEventListener("resize", () => go(si));
   go(0); auto();
 
-  /* ---------- Pricing ---------- */
+  /* ---------- Pricing (starting prices; no discount amounts are shown) ---------- */
   $("plansGrid").innerHTML = arr(C.pricing?.plans).map((p) => `
     <article class="plan${p.popular ? " plan--pop" : ""} reveal">
       ${p.tag ? `<span class="plan__tag">${fmt(p.tag)}</span>` : ""}
       <h3>${fmt(p.name)}</h3>
       <p>${fmt(p.desc)}</p>
-      <div class="plan__price"><b data-m="${esc(p.monthly)}" data-t="${esc(p.term)}">$${esc(p.monthly)}</b><span data-per>/ month</span></div>
+      <div class="plan__price">${p.monthly || p.monthly === 0
+        ? `<small>Starting from</small><b>$${esc(p.monthly)}</b><span>/ month</span>`
+        : `<small>Price</small><b class="plan__quote">On request</b>`}</div>
       <ul>
         ${arr(p.included).map((x) => `<li><i class="ri-check-line"></i> ${fmt(x)}</li>`).join("")}
         ${arr(p.excluded).map((x) => `<li class="off"><i class="ri-close-line"></i> ${fmt(x)}</li>`).join("")}
       </ul>
-      <a href="#contact" class="btn ${p.popular ? "btn--orange" : "btn--outline"}" data-plan="${esc(plain(p.name))}">Choose plan</a>
+      <a href="#contact" class="btn ${p.popular ? "btn--orange" : "btn--outline"}" data-plan="${esc(plain(p.name))}">Get my price</a>
     </article>`).join("");
-  $("billing").addEventListener("click", (e) => {
-    const b = e.target.closest("button"); if (!b) return;
-    $("billing").querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
-    const term = b.dataset.b === "term";
-    document.querySelectorAll(".plan__price b").forEach((p) => (p.textContent = "$" + (term ? p.dataset.t : p.dataset.m)));
-    document.querySelectorAll("[data-per]").forEach((p) => (p.textContent = term ? "/ term (12 wks)" : "/ month"));
-  });
+  $("savingsGrid").innerHTML = arr(C.pricing?.savings).map((x) => `
+    <div class="saving"><i class="${esc(x.icon || "ri-price-tag-3-line")}"></i><div><h4>${fmt(x.title)}</h4><p>${fmt(x.text)}</p></div></div>`).join("");
   document.querySelectorAll("[data-plan]").forEach((a) => a.addEventListener("click", () => {
-    $("trialForm").msg.value = `I'm interested in the ${a.dataset.plan} plan.`;
+    $("trialForm").msg.value = `I'd like a price for the ${a.dataset.plan} plan.`;
   }));
 
   /* ---------- FAQ ---------- */
