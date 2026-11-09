@@ -192,17 +192,23 @@ window.TAWER_DEFAULT = {
 
   pricing: {
     label: "Pricing",
-    title: "Simple plans, [[no hidden fees]]",
-    termSave: "Save 15%",
-    note: "One term = 12 weeks. Sibling and family discounts available. Ask us!",
+    title: "Plans shaped around [[you]]",
+    text: "Every learner's plan is priced for their level, schedule and goals. These are starting prices, and we confirm your exact price before you start.",
+    note: "Your final price depends on your level, schedule and format. Ask us for your personal quote.",
+    savingsTitle: "Ways to save",
+    savings: [
+      { icon: "ri-home-heart-line", title: "Family discount", text: "Learning together? Siblings, parents and other family members studying at Tawer get a reduced rate." },
+      { icon: "ri-wallet-3-line", title: "Pay once, save more", text: "Pay for a full term or course upfront and get a better price than paying month by month." },
+      { icon: "ri-gift-line", title: "Perks instead", text: "Some offers come as extras instead of a lower price, such as **digital books**, **spelling guides** and **reserved workshop spots**." }
+    ],
     plans: [
-      { name: "Group Classes", desc: "General English in a small group", monthly: 89, term: 227, popular: false, tag: "",
+      { name: "Group Classes", desc: "General English in a small group", monthly: 89, popular: false, tag: "",
         included: ["2 lessons a week · 90 min", "Max 8 students", "Course book & online portal", "Weekly speaking club"],
         excluded: ["1-to-1 feedback sessions"] },
-      { name: "Intensive", desc: "Faster progress & exam focus", monthly: 149, term: 380, popular: true, tag: "Most popular",
+      { name: "Intensive", desc: "Faster progress & exam focus", monthly: 149, popular: true, tag: "Most popular",
         included: ["4 lessons a week · 90 min", "Max 8 students", "All materials included", "Unlimited speaking clubs", "Monthly 1-to-1 feedback"],
         excluded: [] },
-      { name: "Private 1-to-1", desc: "Fully personalised lessons", monthly: 199, term: 507, popular: false, tag: "",
+      { name: "Private 1-to-1", desc: "Fully personalised lessons", monthly: 199, popular: false, tag: "",
         included: ["8 private lessons · 60 min", "Your schedule, your topics", "IELTS / business options", "In-class or online", "Weekly progress notes"],
         excluded: [] }
     ]

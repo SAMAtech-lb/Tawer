@@ -276,28 +276,25 @@
   addEventListener("resize", () => go(si));
   go(0); auto();
 
-  /* ---------- Pricing ---------- */
+  /* ---------- Pricing (starting prices; no discount amounts are shown) ---------- */
   $("plansGrid").innerHTML = arr(C.pricing?.plans).map((p) => `
     <article class="plan${p.popular ? " plan--pop" : ""} reveal">
       ${p.tag ? `<span class="plan__tag">${fmt(p.tag)}</span>` : ""}
       <h3>${fmt(p.name)}</h3>
       <p>${fmt(p.desc)}</p>
-      <div class="plan__price"><b data-m="${esc(p.monthly)}" data-t="${esc(p.term)}">$${esc(p.monthly)}</b><span data-per>/ month</span></div>
+      <div class="plan__price">${p.monthly || p.monthly === 0
+        ? `<small>Starting from</small><b>$${esc(p.monthly)}</b><span>/ month</span>`
+        : `<small>Price</small><b class="plan__quote">On request</b>`}</div>
       <ul>
         ${arr(p.included).map((x) => `<li><i class="ri-check-line"></i> ${fmt(x)}</li>`).join("")}
         ${arr(p.excluded).map((x) => `<li class="off"><i class="ri-close-line"></i> ${fmt(x)}</li>`).join("")}
       </ul>
-      <a href="#contact" class="btn ${p.popular ? "btn--orange" : "btn--outline"}" data-plan="${esc(plain(p.name))}">Choose plan</a>
+      <a href="#contact" class="btn ${p.popular ? "btn--orange" : "btn--outline"}" data-plan="${esc(plain(p.name))}">Get my price</a>
     </article>`).join("");
-  $("billing").addEventListener("click", (e) => {
-    const b = e.target.closest("button"); if (!b) return;
-    $("billing").querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b));
-    const term = b.dataset.b === "term";
-    document.querySelectorAll(".plan__price b").forEach((p) => (p.textContent = "$" + (term ? p.dataset.t : p.dataset.m)));
-    document.querySelectorAll("[data-per]").forEach((p) => (p.textContent = term ? "/ term (12 wks)" : "/ month"));
-  });
+  $("savingsGrid").innerHTML = arr(C.pricing?.savings).map((x) => `
+    <div class="saving"><i class="${esc(x.icon || "ri-price-tag-3-line")}"></i><div><h4>${fmt(x.title)}</h4><p>${fmt(x.text)}</p></div></div>`).join("");
   document.querySelectorAll("[data-plan]").forEach((a) => a.addEventListener("click", () => {
-    $("trialForm").msg.value = `I'm interested in the ${a.dataset.plan} plan.`;
+    $("trialForm").msg.value = `I'd like a price for the ${a.dataset.plan} plan.`;
   }));
 
   /* ---------- FAQ ---------- */

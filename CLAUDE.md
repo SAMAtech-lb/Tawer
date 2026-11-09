@@ -66,6 +66,10 @@ dashboard once deployed. Stories are in `stories.items`, testimonials in `review
 ### Messaging priorities (from the client)
 - Value proposition: **customised curriculum updated every term**, **build your own course**,
   **live online access from anywhere**.
+- **Pricing:** prices differ per learner, so plans show only a **starting (minimum) price** ("Starting from
+  $X / month"; empty = "On request"). **Never show discount amounts** (no %, no per-term prices, no "Save X").
+  Family discounts and pay-once discounts are mentioned by name only. Perks (digital books, spelling guides,
+  workshop spots) may replace part of a discount.
 - Success stories outrank testimonials and come first. They are **small cards like the testimonials** (no big
   featured card), in an endless auto-scrolling row. Anchor story (first card): a student who started at
   age 10 and reached IELTS band 8 at 14. Testimonials are short quotes in a separate slider.
@@ -147,3 +151,14 @@ dashboard once deployed. Stories are in `stories.items`, testimonials in `review
   `#stories`. `teachers` stays in `CONTENT_GROUPS` (legacy) so content saved before the change can still be
   saved again. ui-taste check (agent-browser at 1440 and 390 wide): all sections render, no console errors, no
   sideways overflow, all images load.
+- **2026-11-09** — Pricing reworked: removed the Monthly/Per-term toggle and the "Save 15%" badge (it showed
+  discount amounts); `term` prices dropped. Plans show "Starting from $X / month" and a "Get my price" button,
+  which pre-fills the form message. New "Ways to save" block (`pricing.savings`): family discount, pay once and
+  save, perks instead (digital books, spelling guides, workshop spots), all without amounts. Admin: starting
+  price can be left empty for "On request"; new "Ways to save" list editor. ui-taste check (agent-browser
+  1440/390): no errors, no overflow; fixed bold colour in perk text and the price/"/ month" spacing.
+- **2026-11-09** — Added [.github/workflows/pages.yml](.github/workflows/pages.yml) to publish `public/` to GitHub Pages
+  (https://samatech-lb.github.io/Tawer/) on every push to `main`. Needs repo Settings → Pages → Source =
+  "GitHub Actions". Checked: no absolute `/` paths in the public site, and it doesn't depend on the API (it
+  falls back to `content.js`), so the site works on GitHub Pages. `/admin` (login and saving) does **not**; that
+  needs Cloudflare Pages, as described in the README. `public/_headers` is Cloudflare-only and ignored on GitHub Pages.
