@@ -1,3 +1,11 @@
 node_modules/
-.wrangler/
-.dev.vars
+.next/
+out/
+next-env.d.ts
+
+# Secrets: never commit these
+.env
+.env*.local
+
+# Machine-specific Claude Code settings
+.claude/settings.local.json

@@ -1,11 +1,17 @@
 {
   "name": "tawer-academy",
   "private": true,
-  "description": "Tawer Academy website + admin content dashboard (Cloudflare Pages)",
+  "description": "Tawer Academy website + admin content dashboard (Next.js + Neon Postgres)",
   "scripts": {
-    "dev": "wrangler pages dev public --kv CONTENT --compatibility-date=2024-11-01 --port 8788"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
-  "devDependencies": {
-    "wrangler": "^4.0.0"
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remixicon": "^4.5.0"
   }
 }

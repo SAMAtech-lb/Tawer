@@ -1,79 +1,90 @@
 # Tawer Academy
 
-The Tawer Academy website plus a password-protected admin dashboard (`/admin`) for editing the site's text.
-It runs on **Cloudflare Pages** (free plan): static site, small serverless API, and Cloudflare KV storage for the saved content.
+The Tawer Academy website (English + Arabic) plus a password-protected content dashboard (`/admin`).
+Built with **Next.js 16** (App Router, React components). Saved content and form requests are stored in **Neon** Postgres.
 
 ```
-public/              ← everything served to visitors
-  index.html         the website
-  style.css
-  site.js            renders the page from the content
-  content.js         DEFAULT content (used until the admin saves for the first time)
-  admin/             the admin dashboard (index.html, admin.js, admin.css)
-  _headers           security / caching headers
-functions/           ← server code (Cloudflare Pages Functions, not public)
-  index.js           serves "/" with the saved content applied (good for Google & link previews)
-  api/login.js       POST   /api/login     password → session cookie (5 wrong tries = 15 min lock)
-  api/logout.js      POST   /api/logout
-  api/session.js     GET    /api/session
-  api/content.js     GET    /api/content   (public)   ·   PUT /api/content (admin only)
-  api/history.js     GET    /api/history   last 10 saved versions (admin only)
-  _shared/lib.js     helpers (auth, formatting)
+proxy.js                       picks the language for each visit: ?lang=en|ar > remembered choice > browser language
+app/
+  (site)/layout.js             website shell: <html lang dir>, fonts, site.css
+  (site)/page.js               home page: loads the content (database → JSON defaults) and renders the sections
+  (site)/site.css              website styles
+  (admin)/layout.js            dashboard shell + admin.css
+  (admin)/admin/page.js        /admin
+  api/content/route.js         GET /api/content (public) · PUT (admin only)
+  api/history/route.js         GET last 10 saved versions (admin only)
+  api/requests/route.js        POST from the website's two forms · GET / PATCH the inbox (admin only)
+  api/login, logout, session   admin login (5 wrong tries from one IP, or 30 from everyone = 15 min lock)
+  global-not-found.js          the "page not found" page (English/Arabic)
+  icon.svg                     browser-tab icon
+components/
+  Rich.jsx                     shows [[highlight]] / **bold** / new lines as real elements (never as HTML)
+  site/                        one component per section: Header, Hero, About, Levels, Courses, PlacementTest,
+                               Why, Stories, Reviews, Pricing, Sections (FAQ, blog, banner), Contact,
+                               RequestForms, Footer, Topbar, Effects (reveal, counters, back to top), SiteContext
+  admin/                       AdminApp, schema (the sections & fields of the dashboard), Fields (English|Arabic
+                               pairs, rich text box, B/Colour bubble), ListEditor, Inbox, Panels (login, guide,
+                               history, save bar), util
+lib/
+  db.js                        Neon queries (tables are created automatically on the first save)
+  auth.js                      admin session cookie, request checks
+  content.js                   which content sections may be saved + validation
+  requests.js                  rules for the two forms
+  site-content.js              loads the website content for a language (server)
+  site-helpers.js              helpers for server and client components (images, WhatsApp links, t())
+  format.js                    merge (saved over defaults) and translate (Arabic over English)
+  ui-strings.js                Arabic text of the fixed interface (menu, buttons, form labels…)
+  image-loader.js              next/image asks Unsplash's CDN for each photo size (no resizing on our server)
+  defaults.js, fonts.js
+data/                          DEFAULT content (used for anything not saved from the dashboard yet)
+  content.en.json              English (also the structure: lists, numbers, photos, links)
+  content.ar.json              Arabic translation (same shape, text only)
 ```
+
+## Setup
+
+1. Install [Node.js](https://nodejs.org) 20.19 or newer.
+2. `npm install`
+3. Copy `.env.example` to `.env` and fill it in:
+   - `DATABASE_URL`: your Neon connection string (Neon dashboard → **Connect** → copy the string).
+   - `ADMIN_PASSWORD`: the dashboard password (12+ characters).
+   - `SESSION_SECRET` (optional): signs admin sessions. If it's not set, the admin password is used.
+4. `npm run dev`, then open <http://localhost:3000> for the site and <http://localhost:3000/admin> for the dashboard.
+
+For production: `npm run build`, then `npm start`. Any Node.js host that runs Next.js works (for example Vercel, which
+pairs well with Neon). Set the same environment variables on the host.
+
+Changing `ADMIN_PASSWORD` (or `SESSION_SECRET`) logs out every open admin session.
 
 ## How content works
 
-- `public/content.js` holds the default content. Saving from the dashboard stores the full content in KV (key `content`).
-  The previous version goes to `history` (last 10 kept, can be restored from **History** in the dashboard).
-- Saved content always wins over `content.js`. Fields missing from the saved version come from `content.js`, so new
-  fields added to the code later show up automatically.
-- Text fields support `[[words]]` (highlight colour), `**words**` (bold) and line breaks. Everything else is escaped,
-  so typing HTML into the dashboard can't break or hijack the page.
-- **Images are not editable** from the dashboard (by design). Existing items keep their photo; new courses / levels / posts get a
-  standard photo, new teachers / reviews show initials. To change photos, edit the `img` IDs in `public/content.js`
-  (Unsplash photo IDs) or the image URLs in `public/index.html`.
+- **Where text comes from:** the database first; anything not saved there comes from the JSON files in `data/`
+  (see `data/README.md`). Saving from the dashboard stores the full content in the database (table `site_content`).
+  The previous version goes to `content_history` (last 10 kept, restorable from **History** in the dashboard).
+- Text fields support `[[words]]` (highlight colour), `**words**` (bold) and line breaks. They are rendered as React
+  elements, so typing HTML into the dashboard can't break or hijack the page.
+- **Images are not editable** from the dashboard (by design). To change photos, edit the `img` IDs (Unsplash photo IDs)
+  in `data/content.en.json`, or the image IDs in the components.
+- If two people edit at once, the second save is refused with a message to reload.
+- The website keeps the saved content in Next's cache, so visits don't wait for the database. A dashboard save clears
+  it at once. If you change the database **by hand** (Neon console), the site can take up to 10 minutes to show it.
+- The website's only two forms ("Build your own course", "Corporate training") send to `/api/requests`; the requests
+  appear in the dashboard under **Requests**. Every other button opens WhatsApp with a ready-made message.
 
-## Deploy (one time, ~15 minutes)
+## Adding a new section
 
-1. **Cloudflare account**: sign up free at <https://dash.cloudflare.com>.
-2. **Create the KV namespace**: *Storage & Databases → KV → Create* → name it `tawer-content`.
-3. **Create the Pages project**: *Workers & Pages → Create → Pages → Connect to Git* → pick `SAMAtech-lb/Tawer`.
-   - Production branch: `main` (or `admin-dashboard` while testing)
-   - Framework preset: **None** · Build command: *(empty)* · Build output directory: **`public`**
-4. **Settings of the Pages project**:
-   - *Settings → Bindings → Add → KV namespace*: variable name **`CONTENT`**, namespace `tawer-content`.
-   - *Settings → Variables and secrets → Add* (type **Secret**): **`ADMIN_PASSWORD`** = a long password (12+ characters).
-   - Add both for **Production** (and Preview if you use preview deployments).
-5. **Redeploy** (*Deployments → … → Retry deployment*) so the binding and secret take effect.
-6. Open `https://<project>.pages.dev/admin`, log in, edit, **Save & publish**.
+1. Default text in `data/content.en.json` (+ Arabic in `data/content.ar.json`).
+2. A component in `components/site/` and its place in `app/(site)/page.js`.
+3. Its editor in `components/admin/schema.js`.
 
-Changing `ADMIN_PASSWORD` logs out every open admin session.
+The dashboard may save any section that exists in `data/content.en.json` (`lib/content.js` reads the list from there).
 
-## Connect the GoDaddy domain
+## Security
 
-Recommended: move DNS to Cloudflare (the domain stays registered and paid at GoDaddy).
-
-1. Cloudflare dashboard → *Add a domain* → enter `tawer-academy.com` → Free plan. Cloudflare shows two nameservers.
-2. GoDaddy → *My Products → Domain → DNS → Nameservers → Change → "I'll use my own nameservers"* → paste the two Cloudflare nameservers.
-   (Takes a few minutes to a few hours.)
-3. Cloudflare → *Workers & Pages → your project → Custom domains → Set up a custom domain* → add `www.tawer-academy.com`
-   and `tawer-academy.com`. Cloudflare creates the DNS records and the HTTPS certificate automatically.
-
-Alternative without moving DNS: in GoDaddy DNS add a `CNAME` record `www → <project>.pages.dev`, add `www.tawer-academy.com`
-as a custom domain in Pages, and use GoDaddy's domain forwarding for the bare domain → `https://www.tawer-academy.com`.
-
-## Run locally
-
-```bash
-npm install
-cp .dev.vars.example .dev.vars   # then set ADMIN_PASSWORD inside it
-npm run dev                      # http://127.0.0.1:8788  and  http://127.0.0.1:8788/admin
-```
-
-Local saves go to a local KV store in `.wrangler/` (not to the live site).
-Opening `public/index.html` directly in the browser also works, but shows only the default content and the dashboard won't work.
-
-## Free-plan limits (more than enough for one admin)
-
-KV free tier: 100,000 reads/day (about one per page view) and 1,000 writes/day (each save = 2 writes).
-After a save, visitors in other regions can take up to ~60 seconds to see the change (KV propagation).
+- Security headers for every page are in `next.config.mjs` (Content-Security-Policy, HSTS in production,
+  X-Frame-Options, Permissions-Policy). If you add something loaded from another site (a YouTube video, a map,
+  analytics), add its address to the CSP there, or the browser will block it.
+- Login: 5 wrong passwords from one IP lock that IP for 15 minutes; 30 from everyone together lock all logins for
+  15 minutes. Forms: 5 requests per visitor per hour, 60 per hour for the whole site.
+- Visitors' IPs are never stored: only a salted hash (for the limits above), removed after 30 days.
+- The admin cookie is `__Host-tawer_admin` in production (HttpOnly, Secure, SameSite=Strict, 8 hours).
