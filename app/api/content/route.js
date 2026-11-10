@@ -1,6 +1,8 @@
+import { revalidateTag } from "next/cache";
 import { json, fail, isAdmin, sameOriginJson, readJsonBody } from "@/lib/auth";
 import { hasDb, readStored, saveContent } from "@/lib/db";
 import { validateContent } from "@/lib/content";
+import { CONTENT_TAG } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +12,8 @@ export async function GET() {
     const stored = await readStored();
     return json({ content: stored?.content ?? null, updatedAt: stored?.updatedAt ?? null });
   } catch (e) {
-    return fail(500, "Could not read the saved content: " + e.message);
+    console.error("Could not read saved content:", e.message);   // details stay in the server log
+    return fail(500, "Could not read the saved content. Try again in a moment.");
   }
 }
 
@@ -31,8 +34,11 @@ export async function PUT(request) {
     if (result.conflict) {
       return fail(409, "The content was changed somewhere else (another tab or device) since you opened it. Reload to get the latest version.");
     }
+    // The website keeps the saved content in Next's cache; drop it so the next visit shows the change.
+    revalidateTag(CONTENT_TAG, { expire: 0 });
     return json({ ok: true, updatedAt: result.updatedAt });
   } catch (e) {
-    return fail(500, "Could not save: " + e.message);
+    console.error("Could not save content:", e.message);
+    return fail(500, "Could not save. Check your internet connection and try again.");
   }
 }

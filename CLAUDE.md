@@ -30,35 +30,39 @@ The project rules here (strict palette, "don't change the design" requests) outr
 ## Project
 Static marketing website for **Tawer Academy**, an English language academy
 (kids, teens, adults; CEFR levels A1–C1; General English, Conversation, IELTS, TOEFL,
-Business English, Corporate Training; in-class and online).
+Business English, Corporate Training; live online only, the in-person option was removed).
 
 ### Stack
-- **Next.js** (App Router, plain JavaScript) + **Neon Postgres** (`@neondatabase/serverless`). Setup is in [README.md](README.md).
-- `/` and `/admin` are **route handlers** that return full HTML documents built from [templates/](templates/). The site is
-  not React components: the markup is plain HTML and [public/site.js](public/site.js) renders the lists in the browser.
-  Converting sections to React components is possible later, but nobody has asked for it.
+- **Next.js 16** (App Router, **React components**, plain JavaScript/JSX) + **Neon Postgres** (`@neondatabase/serverless`).
+  Setup and the full file map are in [README.md](README.md).
+- **Two route groups with their own root layouts:** `app/(site)/` (the website, `site.css`) and `app/(admin)/` (the
+  dashboard, `admin.css`), so their styles never mix.
+- **Language:** [proxy.js](proxy.js) (Next 16's name for middleware) picks it per visit and passes `x-tawer-lang`; the site
+  layout sets `<html lang dir>`. The page is fully rendered on the server (good for Google and no flash of English).
+- **Server vs client components:** sections without interaction (Hero, About, Why, Pricing, FAQ, Blog, Footer…) are server
+  components; interactive ones (Header, Levels, Courses, PlacementTest, Stories, Reviews, RequestForms, the whole
+  dashboard) are client components (`"use client"`). Client components get `t()` and WhatsApp links from `SiteContext`.
+- **Formatting** (`[[word]]`, `**word**`, new lines) is rendered by [components/Rich.jsx](components/Rich.jsx) as React
+  elements, never as HTML.
+- Fonts via `next/font` ([lib/fonts.js](lib/fonts.js)): Lexend, DM Sans, Cairo, Tajawal → CSS variables. Icons: the
+  `remixicon` npm package (`ri-*`). Images: Unsplash IDs via `U(id, w)` in [lib/site-helpers.js](lib/site-helpers.js).
 - Env vars (in `.env`, git-ignored; template in [.env.example](.env.example)): `DATABASE_URL` (Neon),
   `ADMIN_PASSWORD`, optional `SESSION_SECRET`. **Never print or commit their values.**
-- Fonts: Google Fonts, Lexend (headings) and DM Sans (body). Icons: Remix Icon 4.5.0 (`ri-*`).
-- Images: Unsplash photo IDs, turned into URLs by the `U(id, w)` helper in `site.js`.
 
 ### Files
-- [templates/home.html](templates/home.html): page markup. Text elements carry `data-c="group.field"`. The server
-  ([lib/render.js](lib/render.js)) fills them with the saved content and injects `window.TAWER_CONTENT`.
-- [templates/admin.html](templates/admin.html): dashboard markup.
 - **Where text comes from: database first, then the JSON files.** Defaults live in
   [data/content.en.json](data/content.en.json) (English + structure) and [data/content.ar.json](data/content.ar.json)
-  (Arabic, text only), loaded by [lib/defaults.js](lib/defaults.js) and served to the browser as `/content.js`
-  ([app/content.js/route.js](app/content.js/route.js), `window.TAWER_DEFAULT`). Rules are in [data/README.md](data/README.md).
-  Formatting: `[[word]]` = highlight, `**word**` = bold. The dashboard boxes show the saved text, with defaults filling the gaps.
-- [public/site.js](public/site.js): renders lists and sections from the content and runs the page logic.
-- [public/style.css](public/style.css): all styles. Design tokens are in `:root` (see *Color palette*).
-- [public/admin/](public/admin/): dashboard script and styles. **Any new content field or section needs an editor in `admin.js`.**
-- [app/](app/): routes. `route.js` (/), `admin/route.js`, `api/{content,history,login,logout,session}/route.js`.
-- [lib/](lib/): `db.js` (Neon; tables `site_content`, `content_history`, `login_failures`, created automatically),
-  `auth.js` (signed session cookie, same-origin check), `content.js` (`CONTENT_GROUPS` + validation),
-  `render.js`, `format.js` (must match the formatting helpers in site.js).
-- Adding a section touches 5 places: data/*.json, templates/home.html, site.js, admin.js and `CONTENT_GROUPS` in lib/content.js.
+  (Arabic, text only), loaded by [lib/defaults.js](lib/defaults.js). The site loads content with
+  [lib/site-content.js](lib/site-content.js); the dashboard gets the defaults as a prop from `app/(admin)/admin/page.js`.
+  Rules are in [data/README.md](data/README.md).
+- [components/site/](components/site/): one component per website section. [components/admin/](components/admin/): the
+  dashboard (`schema.js` lists every section and field the admin can edit).
+- [app/api/](app/api/): `content`, `history`, `login`, `logout`, `session`, `requests` route handlers.
+- [lib/](lib/): `db.js` (Neon; tables `site_content`, `content_history`, `login_failures`, `form_requests`, created
+  automatically), `auth.js`, `content.js` (save validation; allowed sections = the keys of content.en.json), `requests.js` (form rules), `format.js`
+  (merge + translate), `ui-strings.js` (Arabic interface text).
+- Adding a section touches 3 places: data/*.json, a component in components/site/ (+ app/(site)/page.js),
+  and components/admin/schema.js. (lib/content.js takes the allowed sections from content.en.json.)
 
 ### Page sections (in order)
 hero → strip (exam prep) → #about (founding story + 4 value ticks) → #levels → #courses →
@@ -69,7 +73,7 @@ There is **no team/teachers section** (removed on purpose).
 
 ### Languages (English + Arabic)
 - **Content:** the main content groups are English. Arabic lives in `content.ar` with the **same shape, text only**.
-  `translate()` (in [lib/format.js](lib/format.js) and [public/site.js](public/site.js), which must match) puts Arabic
+  `translate()` (in [lib/format.js](lib/format.js)) puts Arabic
   over English. Structure always comes from English (list length and order, numbers, photos, links, booleans).
   An empty Arabic field falls back to English. List items match by position.
 - **Dashboard:** every translatable field is an **English | العربية pair side by side** (stacked on phones), under one
@@ -89,10 +93,10 @@ There is **no team/teachers section** (removed on purpose).
 - **Site:** the server picks the language in [lib/ui-strings.js](lib/ui-strings.js) `pickLang`: `?lang=` (the header
   switch, also sets the `tawer_lang` cookie) > cookie > browser `Accept-Language` > English. It sets `<html lang dir>`
   and renders Arabic on the server (no flash of English). Fixed interface text (nav, buttons, form, quiz) is in
-  `UI.ar` in ui-strings.js. Mark new static text in templates/home.html with `data-i18n="key"` or
-  `data-i18n-attr="attr:key"`, and add the Arabic key. Dynamic text in site.js uses `t(key, "English fallback", vars)`.
+  `UI.ar` in ui-strings.js. Components use `t(key, "English fallback", vars)` (from `SiteContext` or a `t` prop);
+  add the Arabic key to `UI.ar` for new interface text.
 - **Placement-test questions stay English** (it tests English). Phone, email and links aren't translated.
-- **RTL CSS:** the RTL block at the end of [public/style.css](public/style.css). Arabic fonts are Cairo (headings) and
+- **RTL CSS:** the RTL block near the end of [app/(site)/site.css](app/(site)/site.css). Arabic fonts are Cairo (headings) and
   Tajawal (body). Text blocks use `unicode-bidi: plaintext`, so untranslated English keeps correct punctuation.
   Numbers like 2,500+ and $89 stay left-to-right.
 
@@ -130,11 +134,16 @@ dashboard once deployed. Stories are in `stories.items`, testimonials in `review
 - Browser defaults are themed too: `::selection` (gold/purple), `:focus-visible` (orange outline),
   `accent-color`/`caret-color` (purple), form placeholders (slate tint).
 - No darker hover shades exist: hovers swap between palette colors (purple btn → orange, orange btn → purple, on-purple → gold with purple text).
-- The favicon and `theme-color` in [templates/home.html](templates/home.html) use the same palette.
+- The favicon ([app/icon.svg](app/icon.svg)) and `theme-color` (layouts' `viewport`) use the same palette.
 
 ### Conventions
-- Content (courses, teachers, reviews, quiz questions) lives in the JS data arrays — edit there,
-  not in hardcoded HTML.
+- Content (courses, reviews, stories, quiz questions…) lives in [data/](data/) JSON (defaults) and the database,
+  never hardcoded in components.
+- Photos use `next/image` with `U(id)`; the loader ([lib/image-loader.js](lib/image-loader.js)) asks Unsplash for
+  each size. Give every `<Image>` width/height (its real ratio) and `sizes`; only the hero has `priority`.
+- Anything new loaded from another site (video embed, map, analytics) must be added to the CSP in
+  [next.config.mjs](next.config.mjs), or the browser blocks it.
+- Public API errors never include `e.message` (log it with `console.error`, return a plain message).
 - Use the CSS variables in `:root` for colors/fonts instead of raw values.
 - Contact details in the JSON-LD are placeholders (`+000 00 000 000`).
 
@@ -249,3 +258,66 @@ dashboard once deployed. Stories are in `stories.items`, testimonials in `review
   writes). **Hero background is now plain white.** Colour audit of all CSS, HTML, JS and the 404 page: only the 6 palette
   colours (6A0DAD, E6E6FA, FFD700, 5E6871, E5511A, FFFFFF) plus transparent tints of them. The last stray value was `#000`
   in the stories fade mask, now `#6A0DAD`.
+- **2026-11-10** — **Rebuilt as a real Next.js/React app** (the previous version served HTML templates from route
+  handlers with hand-written DOM scripts, which the client rightly rejected). Now: `app/(site)` + `app/(admin)` route
+  groups with layouts and pages, ~20 site components and 7 dashboard components, `proxy.js` for language, `next/font`,
+  `remixicon` package, `Rich.jsx` for formatting. Deleted `templates/`, `public/site.js`, `public/admin/admin.js`,
+  `lib/render.js`, the `/content.js` route and `node-html-parser`. Also fixed:
+  - **The two forms showed one under the other**: `.form { display: grid }` overrode the `hidden` attribute. Now only the
+    selected form is rendered (tabs).
+  - **Page was up to 318px too wide** (desktop and phone): hidden checkboxes in the form chips inherited `width: 100%`.
+  Earlier the same day: in-person option removed everywhere, newsletter replaced by a WhatsApp/Telegram community box,
+  forms limited to "Build your own course" + "Corporate training" (stored in Neon, shown in the dashboard's new
+  **Requests** inbox), every other booking button opens WhatsApp with a ready-made message, pricing per course
+  (Group / Private / Customize your own). An identical saved copy of the defaults was deleted from Neon with the
+  user's OK so the JSON changes show.
+  Verified with agent-browser (production build): no overflow at 1440/768/390 in EN and AR; header, levels, filters,
+  quiz, stories, slider (also RTL), forms, menu all work; dashboard login, 15 sections, 243 EN|AR pairs, 460 rich
+  boxes round-trip unchanged, bold bubble, list move keeps Arabic aligned, add/delete, history, inbox; no console
+  errors. Test data (one request) was removed from Neon; DB is empty.
+- **2026-11-10** — Hydration warning on `<body>` (`cz-shortcut-listen`) came from the ColorZilla browser extension, not the
+  site. Added `suppressHydrationWarning` to `<html>`/`<body>` in both layouts (only ignores attribute differences on those two tags).
+- **2026-11-10** — **Requests inbox redesigned** (components/admin/Inbox.jsx + inbox CSS in admin.css): New / Handled / All tabs with
+  counts, search (name, phone, word), form filter, compact cards (avatar, name, type, "40 min ago", key facts as chips,
+  message quote that reads right-to-left for Arabic, "Reply on WhatsApp" as the main action, Copy number, Mark as handled),
+  "All caught up" / "Nothing found" states. ui-taste (agent-browser, sample requests faked in the browser, no DB writes):
+  fixed narrow search box (search inputs now use the standard input style), Arabic names aligned with the card, full-width
+  search on phones. No overflow at 390px, no console errors.
+- **2026-11-10** — Fixed big empty gaps in the dashboard when a page has little content (e.g. one request): the `.panel`
+  grid stretched its rows to the sidebar height. Added `align-content: start` to `.panel`, `.inbox-list`, `.req__main`, `.req__chips`.
+  Verified with one sample request at 1872px: 22px gaps, normal chip height.
+- **2026-11-10** — **Security, bug and speed audit** (plan approved by the user). `npm audit`: 0 vulnerabilities; no secrets
+  ever committed; no XSS found (Rich renders React elements, JSON-LD escaped, RichBox escapes first). Fixed:
+  - **Spoofable IP (high):** `clientIp()` trusted the first `X-Forwarded-For` entry (anyone can send it), so the login lock
+    and form limit could be bypassed. Now: platform header (`x-vercel-forwarded-for` / `cf-connecting-ip` / `x-real-ip`),
+    else the last hop; plus **site-wide caps**: 30 wrong passwords from everyone → all logins locked 15 min (fixed window,
+    `login_failures` row `*`), 60 form requests/hour for the whole site.
+  - **Security headers** on every page (next.config.mjs): CSP (self + images.unsplash.com, no frames/objects), HSTS
+    (production), X-Frame-Options, Permissions-Policy, COOP.
+  - **Privacy:** form IPs stored as a salted SHA-256 hash (`ipHash` in lib/auth.js), set to NULL after 30 days.
+  - Public errors no longer leak DB details; `safeUrl` blocks `//site` and `/\site`; body size checked from
+    `content-length` first; admin cookie is `__Host-tawer_admin` in production (everyone is logged out once).
+  - **Bug:** "Reply on WhatsApp" broke for local numbers. `waDigits()` (site-helpers): `05XXXXXXXX` → `9665…`, `00…` →
+    international (Saudi assumed, as the form placeholder is +966).
+  - **Branded 404** (`app/global-not-found.js`, experimental `globalNotFound`, EN/AR from cookie/browser).
+  - **Speed:** saved content cached with `unstable_cache` (tag `site-content`, 10 min), cleared by `revalidateTag` on save
+    (repeat visits ~40 ms); reads skip the CREATE TABLE checks; scroll handlers once per frame; all photos are
+    `next/image` with srcset from Unsplash's CDN, hero `priority`, sizes reserved (no layout shift); Arabic fonts no
+    longer preloaded (2 font preloads instead of 4).
+  Verified on the production build (:3100, temporary password, deleted afterwards): rotating fake IPs → 429 after 30;
+  faked first XFF entry doesn't escape the lock; 6th request per visitor and 61st site-wide → 429; save shows on the next
+  visit; agent-browser EN/AR at 1440/390: no overflow, no console/CSP errors, site looks unchanged; dashboard login,
+  rich boxes, inbox OK. ui-taste fix: 404 page on phones (smaller "404", equal-width buttons). All test rows removed
+  from Neon (content 0, history 0, login 0). One request in the inbox that isn't a test row was left untouched.
+  Not done (optional): Remix Icon font → SVG icons (~180 KB).
+- **2026-11-10** — **Complexity check** (user: "is there any unwanted complexity, fix it"). Scanned for unused exports, CSS
+  classes, interface strings and content fields: almost everything is used. Fixed:
+  - one copy of each helper: `isObj`/`merge` (were in lib/format.js, components/admin/util.js and lib/content.js),
+    `plain` and `initials` (were also in util.js / Inbox.jsx); util re-exports them, `clone` uses `structuredClone`.
+  - `CONTENT_GROUPS`/`TRANSLATIONS` removed: lib/content.js takes the allowed sections from data/content.en.json, so a
+    new section touches 3 places instead of 4, and the legacy `teachers` group is gone (DB had nothing saved with it).
+  - dead CSS (`.toggle` from the old Monthly/Per-term switch, `ri-send-plane-fill`); `/admin` no longer
+    `force-dynamic` (now static); form reset in RequestForms in one function; WhatsApp example number now Saudi.
+  Verified on the production build: full default content still saves, `teachers` / `ar.teachers` refused, dashboard
+  tabs, list titles, inbox avatar and rich boxes OK, site EN/AR no overflow, no console errors. Test save removed
+  from Neon (all tables empty except the one real request).

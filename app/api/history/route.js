@@ -10,6 +10,7 @@ export async function GET(request) {
   try {
     return json({ versions: await readHistory() });
   } catch (e) {
-    return fail(500, "Could not read the history: " + e.message);
+    console.error("Could not read history:", e.message);
+    return fail(500, "Could not read the history. Try again in a moment.");
   }
 }
