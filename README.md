@@ -16,6 +16,8 @@ app/
   api/requests/route.js        POST from the website's two forms · GET / PATCH the inbox (admin only)
   api/login, logout, session   admin login (5 wrong tries from one IP, or 30 from everyone = 15 min lock)
   global-not-found.js          the "page not found" page (English/Arabic)
+  robots.js, sitemap.js        /robots.txt and /sitemap.xml (both languages, with hreflang)
+  llms.txt/route.js            /llms.txt: plain-text summary for AI assistants, built from the content
   icon.svg                     browser-tab icon
 components/
   Rich.jsx                     shows [[highlight]] / **bold** / new lines as real elements (never as HTML)
@@ -31,6 +33,7 @@ lib/
   content.js                   which content sections may be saved + validation
   requests.js                  rules for the two forms
   site-content.js              loads the website content for a language (server)
+  seo.js                       site address, canonical/hreflang URLs, structured data (JSON-LD)
   site-helpers.js              helpers for server and client components (images, WhatsApp links, t())
   format.js                    merge (saved over defaults) and translate (Arabic over English)
   ui-strings.js                Arabic text of the fixed interface (menu, buttons, form labels…)
@@ -49,6 +52,8 @@ data/                          DEFAULT content (used for anything not saved from
    - `DATABASE_URL`: your Neon connection string (Neon dashboard → **Connect** → copy the string).
    - `ADMIN_PASSWORD`: the dashboard password (12+ characters).
    - `SESSION_SECRET` (optional): signs admin sessions. If it's not set, the admin password is used.
+   - `SITE_URL`: the public address, e.g. `https://www.tawer-academy.com` (canonical tags, sitemap, structured data).
+   Never put real values in `.env.example`: it is committed to git.
 4. `npm run dev`, then open <http://localhost:3000> for the site and <http://localhost:3000/admin> for the dashboard.
 
 For production: `npm run build`, then `npm start`. Any Node.js host that runs Next.js works (for example Vercel, which

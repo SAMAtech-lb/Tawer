@@ -24,6 +24,10 @@ The project rules here (strict palette, "don't change the design" requests) outr
   uses the system **Edge** via `AGENT_BROWSER_EXECUTABLE_PATH`, set in
   [.claude/settings.local.json](.claude/settings.local.json) (machine-specific and git-ignored).
   Outside Claude Code, pass `--executable-path "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"`.
+- **SEO skills** (`seo` + 32 `seo-*`, Claude SEO v2.5.0 by AgriciDaniel, github.com/AgriciDaniel/claude-seo, MIT) are
+  copied into [.claude/skills/](.claude/skills/) without their runtime. Their scripts run through the **global**
+  install: `"$HOME/.claude/skills/seo/scripts/claude-seo"` (Python venv + Chromium, 1.4 GB, git-ignored). On a new
+  machine, install Claude SEO globally once, then `/seo setup`. Use `/seo audit`, `/seo schema`, `/seo geo`… for SEO work.
 - Fallback if agent-browser fails: headless Edge screenshots
   (`msedge --headless=new --screenshot=<file> --window-size=1440,12000 <url>`).
 
@@ -321,3 +325,24 @@ dashboard once deployed. Stories are in `stories.items`, testimonials in `review
   Verified on the production build: full default content still saves, `teachers` / `ar.teachers` refused, dashboard
   tabs, list titles, inbox avatar and rich boxes OK, site EN/AR no overflow, no console errors. Test save removed
   from Neon (all tables empty except the one real request).
+- **2026-11-10** — **SEO audit + fixes** (user's /seo request; run inline on the local production build, no live URL yet).
+  - **Critical, fixed:** the Arabic page's canonical pointed to the English URL, so Google would treat Arabic as a
+    duplicate. Now English = `/` and Arabic = `/?lang=ar`, each canonical to itself, hreflang en/ar/x-default
+    ([lib/seo.js](lib/seo.js)). Site address comes from `SITE_URL` (env), default `https://www.tawer-academy.com`.
+  - Added `/robots.txt` (blocks /admin and /api/), `/sitemap.xml` (both languages with hreflang), `/llms.txt` (built
+    from the content). Open Graph: url, site name, 1200×630 image with alt, alternate locale.
+  - JSON-LD is now one `@graph` (WebSite + EducationalOrganization + Courses with descriptions/levels) + FAQPage (kept;
+    no rich result since May 2026, flagged as Info only). The placeholder phone and `#` social links are left out
+    until real values exist. No AggregateRating (the hero's "4.9 from 412 reviews" is placeholder data).
+  - Search descriptions shortened to 148 chars (EN/AR) from existing facts. Image loader never asks for more than 2×
+    the photo's U(id, w) width (avatars offered 3840px before). `preconnect` to images.unsplash.com (sent as a Link header).
+  - **Security, found during the audit:** commit `39b3688` (user's "all", pushed to origin/main and
+    origin/ahmad_frontend_changes) put the **real Neon connection string and the real admin password ("123")** in
+    `.env.example`. File replaced with placeholders; the user must rotate the Neon password and set a long admin
+    password. Git history not rewritten (needs the user's decision).
+  - Still open (needs the client): real domain, phone/WhatsApp, social/community links, privacy/terms pages, blog
+    posts (all `#` now), real review numbers, country/cities served, a PNG logo; separate pages per course/blog post
+    would let the site rank for more than the home page.
+- **2026-11-10** — Added the 33 Claude SEO skills to the project's [.claude/skills/](.claude/skills/) (copied from the
+  global install, 2.5 MB; the 1.4 GB Python/Chromium runtime was left out and is git-ignored). Not in skills-lock.json
+  (that file belongs to the `npx skills` CLI); the source is noted under *Tooling installed*.
