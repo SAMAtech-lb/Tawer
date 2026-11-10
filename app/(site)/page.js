@@ -1,7 +1,8 @@
 /* The website's home page. Text comes from the database first, then the JSON defaults (lib/site-content.js),
  * in the language picked by proxy.js. Sections are in components/site/. */
 import { getLang, loadSiteContent } from "@/lib/site-content";
-import { arr, jsonLd, makeT, makeWa, plain, waNumber } from "@/lib/site-helpers";
+import { jsonLd, makeT, makeWa, plain, waNumber } from "@/lib/site-helpers";
+import { LANG_ALTERNATES, SHARE_IMAGE, SITE_URL, pageUrl, structuredData } from "@/lib/seo";
 import { SiteProvider } from "@/components/site/SiteContext";
 import { BackToTop, RevealObserver } from "@/components/site/Effects";
 import Topbar from "@/components/site/Topbar";
@@ -19,24 +20,23 @@ import { Blog, CtaBand, Faq } from "@/components/site/Sections";
 import Contact from "@/components/site/Contact";
 import Footer from "@/components/site/Footer";
 
-const SITE_URL = "https://www.tawer-academy.com/";
-
 export async function generateMetadata() {
   const lang = await getLang();
   const { content: C } = await loadSiteContent(lang);
   const seo = C.seo || {};
+  const share = { title: plain(seo.shareTitle || seo.title), description: plain(seo.shareDescription || seo.description) };
   return {
+    metadataBase: new URL(SITE_URL),
     title: plain(seo.title),
     description: plain(seo.description),
-    alternates: { canonical: SITE_URL, languages: { en: `${SITE_URL}?lang=en`, ar: `${SITE_URL}?lang=ar`, "x-default": SITE_URL } },
+    // Each language is its own page for Google: canonical = itself, hreflang lists both.
+    alternates: { canonical: pageUrl(lang), languages: LANG_ALTERNATES },
     openGraph: {
-      type: "website",
-      title: plain(seo.shareTitle || seo.title),
-      description: plain(seo.shareDescription || seo.description),
-      locale: lang === "ar" ? "ar_SA" : "en_US",
-      images: ["https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"],
+      type: "website", siteName: "Tawer Academy", url: pageUrl(lang), ...share,
+      locale: lang === "ar" ? "ar_SA" : "en_US", alternateLocale: lang === "ar" ? ["en_US"] : ["ar_SA"],
+      images: [{ ...SHARE_IMAGE, alt: share.title }],
     },
-    twitter: { card: "summary_large_image" },
+    twitter: { card: "summary_large_image", ...share, images: [SHARE_IMAGE.url] },
   };
 }
 
@@ -47,21 +47,10 @@ export default async function HomePage() {
   const num = waNumber(C);
   const wa = makeWa(num, t);
 
-  const org = {
-    "@context": "https://schema.org", "@type": "EducationalOrganization", name: "Tawer Academy",
-    description: plain(C.seo?.description), url: SITE_URL, telephone: C.contact?.phone, email: C.contact?.email,
-    hasOfferCatalog: { "@type": "OfferCatalog", name: "English courses",
-      itemListElement: arr(C.courses?.items).map((c) => ({ "@type": "Course", name: plain(c.title), provider: { "@type": "Organization", name: "Tawer Academy" } })) },
-  };
-  const faq = {
-    "@context": "https://schema.org", "@type": "FAQPage",
-    mainEntity: arr(C.faq?.items).map((f) => ({ "@type": "Question", name: plain(f.q), acceptedAnswer: { "@type": "Answer", text: plain(f.a) } })),
-  };
 
   return (
     <SiteProvider lang={lang} ui={ui} waNum={num}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(org) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(faq) }} />
+      {structuredData(C, lang).map((block, i) => <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(block) }} />)}
       <Topbar C={C} />
       <Header />
       <main id="top">

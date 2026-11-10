@@ -321,3 +321,22 @@ dashboard once deployed. Stories are in `stories.items`, testimonials in `review
   Verified on the production build: full default content still saves, `teachers` / `ar.teachers` refused, dashboard
   tabs, list titles, inbox avatar and rich boxes OK, site EN/AR no overflow, no console errors. Test save removed
   from Neon (all tables empty except the one real request).
+- **2026-11-10** — **SEO audit + fixes** (user's /seo request; run inline on the local production build, no live URL yet).
+  - **Critical, fixed:** the Arabic page's canonical pointed to the English URL, so Google would treat Arabic as a
+    duplicate. Now English = `/` and Arabic = `/?lang=ar`, each canonical to itself, hreflang en/ar/x-default
+    ([lib/seo.js](lib/seo.js)). Site address comes from `SITE_URL` (env), default `https://www.tawer-academy.com`.
+  - Added `/robots.txt` (blocks /admin and /api/), `/sitemap.xml` (both languages with hreflang), `/llms.txt` (built
+    from the content). Open Graph: url, site name, 1200×630 image with alt, alternate locale.
+  - JSON-LD is now one `@graph` (WebSite + EducationalOrganization + Courses with descriptions/levels) + FAQPage (kept;
+    no rich result since May 2026, flagged as Info only). The placeholder phone and `#` social links are left out
+    until real values exist. No AggregateRating (the hero's "4.9 from 412 reviews" is placeholder data).
+  - Search descriptions shortened to 148 chars (EN/AR) from existing facts. Image loader never asks for more than 2×
+    the photo's U(id, w) width (avatars offered 3840px before). `preconnect` to images.unsplash.com (sent as a Link header).
+  - **Security, found during the audit:** commit `39b3688` (user's "all", pushed to origin/main and
+    origin/ahmad_frontend_changes) put the **real Neon connection string and the real admin password ("123")** in
+    `.env.example`. File replaced with placeholders; the user must rotate the Neon password and set a long admin
+    password. Git history not rewritten (needs the user's decision).
+  - Still open (needs the client): real domain, phone/WhatsApp, social/community links, privacy/terms pages, blog
+    posts (all `#` now), real review numbers, country/cities served, a PNG logo; separate pages per course/blog post
+    would let the site rank for more than the home page.
+
