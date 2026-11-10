@@ -13,16 +13,20 @@
   <meta property="og:description" content="Small classes, certified teachers and a clear path from A1 to C1. Find your level in 3 minutes and book a free trial lesson." />
   <meta property="og:image" content="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:locale" content="en_US" />
+  <link rel="alternate" hreflang="en" href="https://www.tawer-academy.com/?lang=en" />
+  <link rel="alternate" hreflang="ar" href="https://www.tawer-academy.com/?lang=ar" />
+  <link rel="alternate" hreflang="x-default" href="https://www.tawer-academy.com/" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236A0DAD'/%3E%3Cpath d='M18 20h28v7H35.5v19h-7V27H18z' fill='%23fff'/%3E%3Ccircle cx='46' cy='44' r='5' fill='%23FFD700'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Lexend:wght@500;600;700&family=Cairo:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/style.css" />
   <!-- Structured data: filled in from the site content by site.js -->
   <script type="application/ld+json" id="ldOrg">{}</script>
   <script type="application/ld+json" id="ldFaq">{}</script>
-  <!-- Saved content from the admin dashboard is injected here by the server -->
+  <!-- Saved content from the admin dashboard is injected here by the server (lib/render.js) -->
 </head>
 <body>
   <!-- Topbar -->
@@ -46,24 +50,25 @@
   <!-- Header -->
   <header class="header" id="header">
     <div class="container">
-      <a href="#top" class="logo" aria-label="Tawer Academy home">
+      <a href="#top" class="logo" aria-label="Tawer Academy home" data-i18n-attr="aria-label:a11y.home">
         <span class="logo__mark">T<i></i></span>
         <span class="logo__text">Tawer<small>Academy</small></span>
       </a>
-      <nav class="nav" id="nav" aria-label="Main">
-        <a href="#about">About</a>
-        <a href="#levels">Levels</a>
-        <a href="#courses">Courses</a>
-        <a href="#test">Placement test</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#faq">FAQ</a>
-        <a href="#contact">Contact</a>
-        <a href="#contact" class="btn nav__cta">Book a free trial</a>
+      <nav class="nav" id="nav" aria-label="Main" data-i18n-attr="aria-label:a11y.main">
+        <a href="#about" data-i18n="nav.about">About</a>
+        <a href="#levels" data-i18n="nav.levels">Levels</a>
+        <a href="#courses" data-i18n="nav.courses">Courses</a>
+        <a href="#test" data-i18n="nav.test">Placement test</a>
+        <a href="#pricing" data-i18n="nav.pricing">Pricing</a>
+        <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="#contact" data-i18n="nav.contact">Contact</a>
+        <a href="#contact" class="btn nav__cta" data-wa="wa.trial" data-i18n="nav.cta">Book a free trial</a>
       </nav>
       <div class="header__right">
-        <a href="#test" class="link-test"><i class="ri-survey-line"></i> Find my level</a>
-        <a href="#contact" class="btn">Free trial lesson</a>
-        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><i class="ri-menu-3-line"></i></button>
+        <a href="?lang=ar" class="lang-switch" lang="ar" hreflang="ar" data-lang-switch aria-label="Switch to Arabic" data-i18n-attr="aria-label:lang.switchLabel"><i class="ri-translate-2"></i><span data-i18n="lang.switch">العربية</span></a>
+        <a href="#test" class="link-test"><i class="ri-survey-line"></i> <span data-i18n="header.findLevel">Find my level</span></a>
+        <a href="#contact" class="btn" data-wa="wa.trial" data-i18n="header.trial">Free trial lesson</a>
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" data-i18n-attr="aria-label:a11y.menu"><i class="ri-menu-3-line"></i></button>
       </div>
     </div>
   </header>
@@ -73,7 +78,7 @@
     <section class="hero">
       <div class="container">
         <div class="hero__text">
-          <span class="label"><i class="ri-sparkling-2-fill"></i> <span data-c="hero.label">English courses · A1 to C1 · In-class &amp; online</span></span>
+          <span class="label"><i class="ri-sparkling-2-fill"></i> <span data-c="hero.label">English courses · A1 to C1 · Live online</span></span>
           <h1 data-c="hero.title" data-hl="hl">Speak English with <span class="hl">confidence</span>, at every level.</h1>
           <p data-c="hero.text">Tawer Academy helps kids, teens and adults go from their first words to fluent conversation, with certified teachers, small classes of up to 8 students and a clear path you can follow.</p>
           <div class="hero__btns">
@@ -114,7 +119,7 @@
     </section>
 
     <!-- Exams strip -->
-    <section class="strip" aria-label="Exam preparation">
+    <section class="strip" aria-label="Exam preparation" data-i18n-attr="aria-label:a11y.exams">
       <div class="container">
         <p data-c="exams.label">We prepare students for</p>
         <ul id="examList"></ul>
@@ -168,11 +173,11 @@
             <h2 class="h2" data-c="courses.title">English courses for <span>every goal</span></h2>
           </div>
           <div class="filters" id="filters">
-            <button class="active" data-f="all">All courses</button>
-            <button data-f="adults">Adults</button>
-            <button data-f="kids">Kids &amp; Teens</button>
-            <button data-f="business">Business</button>
-            <button data-f="exam">Exam prep</button>
+            <button class="active" data-f="all" data-i18n="filter.all">All courses</button>
+            <button data-f="adults" data-i18n="filter.adults">Adults</button>
+            <button data-f="kids" data-i18n="filter.kids">Kids &amp; Teens</button>
+            <button data-f="business" data-i18n="filter.business">Business</button>
+            <button data-f="exam" data-i18n="filter.exam">Exam prep</button>
           </div>
         </div>
         <div class="courses" id="courseGrid"></div>
@@ -204,7 +209,7 @@
     </section>
 
     <!-- Why us + stats -->
-    <section class="section section--light why">
+    <section class="section section--light why" id="why">
       <div class="container">
         <div class="title reveal">
           <span class="label" data-c="why.label">Why Tawer</span>
@@ -224,11 +229,11 @@
           <p data-c="stories.text">Every learner starts somewhere. Here's where a few of them ended up.</p>
         </div>
       </div>
-      <div class="marquee reveal" aria-label="Student success stories">
+      <div class="marquee reveal" aria-label="Student success stories" data-i18n-attr="aria-label:a11y.stories">
         <div class="marquee__track" id="storyTrack"></div>
       </div>
       <div class="marquee__ctrl">
-        <button id="storyPause" aria-pressed="false" aria-label="Pause success stories"><i class="ri-pause-line"></i></button>
+        <button id="storyPause" aria-pressed="false" aria-label="Pause success stories" data-i18n-attr="aria-label:a11y.pauseStories"><i class="ri-pause-line"></i></button>
       </div>
     </section>
 
@@ -242,9 +247,9 @@
         <div class="slider reveal">
           <div class="slider__track" id="track"></div>
           <div class="slider__nav">
-            <button id="prev" aria-label="Previous review"><i class="ri-arrow-left-line"></i></button>
+            <button id="prev" aria-label="Previous review" data-i18n-attr="aria-label:a11y.prevReview"><i class="ri-arrow-left-line"></i></button>
             <div class="slider__dots" id="dots"></div>
-            <button id="next" aria-label="Next review"><i class="ri-arrow-right-line"></i></button>
+            <button id="next" aria-label="Next review" data-i18n-attr="aria-label:a11y.nextReview"><i class="ri-arrow-right-line"></i></button>
           </div>
         </div>
       </div>
@@ -301,54 +306,102 @@
           <h2 data-c="cta.title">Your first lesson is on us.</h2>
           <p data-c="cta.text">Book a free 45-minute trial class and get your level assessed by a teacher.</p>
         </div>
-        <a href="#contact" class="btn btn--orange btn--lg"><span data-c="cta.button">Book my free trial</span> <i class="ri-arrow-right-line"></i></a>
+        <a href="#contact" class="btn btn--orange btn--lg" data-wa="wa.trial"><i class="ri-whatsapp-line"></i> <span data-c="cta.button">Book my free trial</span> <i class="ri-arrow-right-line"></i></a>
       </div>
     </section>
 
-    <!-- Contact -->
+    <!-- Contact: WhatsApp first, plus the site's only two forms -->
     <section class="section" id="contact">
       <div class="container contact__grid">
         <div class="contact__info reveal">
           <span class="label" data-c="contact.label">Contact us</span>
-          <h2 class="h2" data-c="contact.title">Book your <span>free trial lesson</span></h2>
-          <p data-c="contact.text">Fill in the form and our coordinator will call you within one working day to choose a time.</p>
+          <h2 class="h2" data-c="contact.title">Book your <span>free trial session</span></h2>
+          <p data-c="contact.text">The quickest way to reach us is WhatsApp. Send us a message and a coordinator will reply within the hour to book your free trial.</p>
+          <a href="#contact" class="btn btn--wa btn--lg contact__wa" data-wa="wa.trial"><i class="ri-whatsapp-line"></i> <span data-c="contact.button">Book on WhatsApp</span></a>
           <ul class="contact__list">
-            <li><i class="ri-map-pin-2-line"></i><div><b>Visit us</b><span data-c="contact.address">Cedar Tower, 3rd floor, Main Street, City Center</span></div></li>
-            <li><i class="ri-phone-line"></i><div><b>Call or WhatsApp</b><span data-c="contact.phone">+000 00 000 000</span></div></li>
-            <li><i class="ri-mail-line"></i><div><b>Email</b><span data-c="contact.email">hello@tawer-academy.com</span></div></li>
-            <li><i class="ri-time-line"></i><div><b>Opening hours</b><span data-c="contact.hours">Mon–Fri 9:00–21:00 · Sat 10:00–16:00</span></div></li>
+            <li><i class="ri-phone-line"></i><div><b data-i18n="contact.call">Call or WhatsApp</b><span data-c="contact.phone">+000 00 000 000</span></div></li>
+            <li><i class="ri-mail-line"></i><div><b data-i18n="contact.email">Email</b><span data-c="contact.email">hello@tawer-academy.com</span></div></li>
+            <li><i class="ri-time-line"></i><div><b data-i18n="contact.hours">Opening hours</b><span data-c="contact.hours">Mon–Fri 9:00–21:00 · Sat 10:00–16:00</span></div></li>
           </ul>
         </div>
-        <form class="form reveal" id="trialForm" novalidate>
-          <div class="form__row">
-            <label>Full name<input name="name" required placeholder="e.g. Sara Haddad" /></label>
-            <label>Phone<input name="phone" type="tel" required placeholder="+000 00 000 000" /></label>
+
+        <div class="request reveal" id="request">
+          <p class="request__label" data-c="forms.label">Prefer to send the details?</p>
+          <div class="request__tabs" role="tablist" aria-label="Request forms">
+            <button type="button" role="tab" class="active" aria-selected="true" aria-controls="formCustom" id="tabCustom" data-form="custom"><i class="ri-puzzle-line"></i> <span data-c="forms.customTab">Build your own course</span></button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="formCorporate" id="tabCorporate" data-form="corporate"><i class="ri-building-2-line"></i> <span data-c="forms.corporateTab">Corporate training</span></button>
           </div>
-          <label>Email<input name="email" type="email" required placeholder="you@email.com" /></label>
-          <div class="form__row">
-            <label>Course
-              <select name="course" id="fCourse"></select>
-            </label>
-            <label>Your level
-              <select name="level" id="fLevel"></select>
-            </label>
-          </div>
-          <fieldset class="chips">
-            <legend>Preferred time</legend>
-            <label><input type="radio" name="time" value="Morning" /> <span>Morning</span></label>
-            <label><input type="radio" name="time" value="Afternoon" /> <span>Afternoon</span></label>
-            <label><input type="radio" name="time" value="Evening" checked /> <span>Evening</span></label>
-            <label><input type="radio" name="time" value="Weekend" /> <span>Weekend</span></label>
-          </fieldset>
-          <fieldset class="chips">
-            <legend>Format</legend>
-            <label><input type="radio" name="mode" value="In-class" checked /> <span><i class="ri-building-line"></i> In-class</span></label>
-            <label><input type="radio" name="mode" value="Online" /> <span><i class="ri-computer-line"></i> Online</span></label>
-          </fieldset>
-          <label>Message (optional)<textarea name="msg" rows="3" placeholder="Tell us about your goals, e.g. IELTS 7 by June"></textarea></label>
-          <button class="btn btn--orange btn--lg btn--full" type="submit">Request my free trial <i class="ri-send-plane-line"></i></button>
-          <p class="form__msg" id="formMsg" role="status"></p>
-        </form>
+
+          <form class="form" id="formCustom" data-type="custom" role="tabpanel" aria-labelledby="tabCustom" novalidate>
+            <p class="form__intro" data-c="forms.customText">Tell us your goals and schedule, and we'll design a course around you. We reply within one working day.</p>
+            <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <div class="form__row">
+              <label><span data-i18n="req.name">Full name</span><input name="name" required maxlength="80" autocomplete="name" /></label>
+              <label><span data-i18n="req.phone">WhatsApp number</span><input name="phone" type="tel" dir="ltr" required maxlength="30" autocomplete="tel" placeholder="+966 5x xxx xxxx" /></label>
+            </div>
+            <div class="form__row">
+              <label><span data-i18n="req.email">Email (optional)</span><input name="email" type="email" dir="ltr" maxlength="120" autocomplete="email" /></label>
+              <label><span data-i18n="req.level">Your current level</span><select name="level" id="reqLevel"></select></label>
+            </div>
+            <fieldset class="chips">
+              <legend data-i18n="req.focus">What do you want to focus on?</legend>
+              <label><input type="checkbox" name="focus" value="speaking" /> <span data-i18n="req.f.speaking">Speaking &amp; conversation</span></label>
+              <label><input type="checkbox" name="focus" value="grammar" /> <span data-i18n="req.f.grammar">Grammar &amp; vocabulary</span></label>
+              <label><input type="checkbox" name="focus" value="writing" /> <span data-i18n="req.f.writing">Writing</span></label>
+              <label><input type="checkbox" name="focus" value="exam" /> <span data-i18n="req.f.exam">IELTS / STEP / TOEFL</span></label>
+              <label><input type="checkbox" name="focus" value="business" /> <span data-i18n="req.f.business">Business English</span></label>
+              <label><input type="checkbox" name="focus" value="kids" /> <span data-i18n="req.f.kids">For my child</span></label>
+            </fieldset>
+            <fieldset class="chips">
+              <legend data-i18n="req.type">Lesson type</legend>
+              <label><input type="radio" name="lessonType" value="private" /> <span data-i18n="req.t.private">Private (1-to-1)</span></label>
+              <label><input type="radio" name="lessonType" value="group" /> <span data-i18n="req.t.group">Small group</span></label>
+              <label><input type="radio" name="lessonType" value="unsure" checked /> <span data-i18n="req.t.unsure">Not sure yet</span></label>
+            </fieldset>
+            <div class="form__row">
+              <fieldset class="chips">
+                <legend data-i18n="req.perWeek">Lessons per week</legend>
+                <label><input type="radio" name="perWeek" value="1" /> <span>1</span></label>
+                <label><input type="radio" name="perWeek" value="2" checked /> <span>2</span></label>
+                <label><input type="radio" name="perWeek" value="3" /> <span>3</span></label>
+                <label><input type="radio" name="perWeek" value="4+" /> <span>4+</span></label>
+              </fieldset>
+              <fieldset class="chips">
+                <legend data-i18n="req.times">Best times</legend>
+                <label><input type="checkbox" name="times" value="morning" /> <span data-i18n="req.morning">Morning</span></label>
+                <label><input type="checkbox" name="times" value="afternoon" /> <span data-i18n="req.afternoon">Afternoon</span></label>
+                <label><input type="checkbox" name="times" value="evening" /> <span data-i18n="req.evening">Evening</span></label>
+                <label><input type="checkbox" name="times" value="weekend" /> <span data-i18n="req.weekend">Weekend</span></label>
+              </fieldset>
+            </div>
+            <label><span data-i18n="req.msg">Anything else? (optional)</span><textarea name="message" rows="3" maxlength="1500" placeholder="e.g. IELTS 7 by June" data-i18n-attr="placeholder:req.msgPh"></textarea></label>
+            <button class="btn btn--orange btn--lg btn--full" type="submit"><span data-i18n="req.send">Send my request</span> <i class="ri-send-plane-line"></i></button>
+            <p class="form__msg" role="status"></p>
+          </form>
+
+          <form class="form" id="formCorporate" data-type="corporate" role="tabpanel" aria-labelledby="tabCorporate" novalidate hidden>
+            <p class="form__intro" data-c="forms.corporateText">English training for your team: we check everyone's level and build a programme around your company's goals.</p>
+            <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <div class="form__row">
+              <label><span data-i18n="req.company">Company name</span><input name="company" required maxlength="120" autocomplete="organization" /></label>
+              <label><span data-i18n="req.contact">Your name</span><input name="name" required maxlength="80" autocomplete="name" /></label>
+            </div>
+            <div class="form__row">
+              <label><span data-i18n="req.phoneCorp">Phone / WhatsApp</span><input name="phone" type="tel" dir="ltr" required maxlength="30" autocomplete="tel" placeholder="+966 5x xxx xxxx" /></label>
+              <label><span data-i18n="req.emailCorp">Work email (optional)</span><input name="email" type="email" dir="ltr" maxlength="120" autocomplete="email" /></label>
+            </div>
+            <fieldset class="chips">
+              <legend data-i18n="req.teamSize">Team size</legend>
+              <label><input type="radio" name="teamSize" value="2-5" /> <span>2–5</span></label>
+              <label><input type="radio" name="teamSize" value="6-15" checked /> <span>6–15</span></label>
+              <label><input type="radio" name="teamSize" value="16-50" /> <span>16–50</span></label>
+              <label><input type="radio" name="teamSize" value="50+" /> <span>50+</span></label>
+            </fieldset>
+            <label><span data-i18n="req.goals">What does your team need?</span><textarea name="message" rows="4" required maxlength="1500" placeholder="e.g. Meetings and emails with international clients" data-i18n-attr="placeholder:req.goalsPh"></textarea></label>
+            <button class="btn btn--orange btn--lg btn--full" type="submit"><span data-i18n="req.send">Send my request</span> <i class="ri-send-plane-line"></i></button>
+            <p class="form__msg" role="status"></p>
+          </form>
+        </div>
       </div>
     </section>
   </main>
@@ -363,46 +416,46 @@
           <a href="#" data-social="instagram" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
           <a href="#" data-social="facebook" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
           <a href="#" data-social="tiktok" aria-label="TikTok"><i class="ri-tiktok-fill"></i></a>
+          <a href="#" data-social="youtube" aria-label="YouTube"><i class="ri-youtube-fill"></i></a>
           <a href="#" data-social="linkedin" aria-label="LinkedIn"><i class="ri-linkedin-fill"></i></a>
         </div>
       </div>
       <div>
-        <h4>Courses</h4>
-        <a href="#courses">General English</a>
-        <a href="#courses">Business English</a>
-        <a href="#courses">IELTS &amp; TOEFL</a>
-        <a href="#courses">Kids &amp; Teens</a>
-        <a href="#courses">Private lessons</a>
+        <h4 data-i18n="footer.courses">Courses</h4>
+        <a href="#courses" data-i18n="footer.general">General English</a>
+        <a href="#courses" data-i18n="footer.business">Business English</a>
+        <a href="#courses" data-i18n="footer.ielts">IELTS &amp; TOEFL</a>
+        <a href="#courses" data-i18n="footer.kids">Kids &amp; Teens</a>
+        <a href="#courses" data-i18n="footer.private">Private lessons</a>
       </div>
       <div>
-        <h4>Academy</h4>
-        <a href="#about">About us</a>
-        <a href="#stories">Success stories</a>
-        <a href="#levels">Levels (CEFR)</a>
-        <a href="#test">Placement test</a>
-        <a href="#blog">Blog</a>
+        <h4 data-i18n="footer.academy">Academy</h4>
+        <a href="#about" data-i18n="footer.about">About us</a>
+        <a href="#stories" data-i18n="footer.stories">Success stories</a>
+        <a href="#levels" data-i18n="footer.levels">Levels (CEFR)</a>
+        <a href="#test" data-i18n="footer.test">Placement test</a>
+        <a href="#blog" data-i18n="footer.blog">Blog</a>
       </div>
       <div>
-        <h4 data-c="footer.newsTitle">Get English tips</h4>
-        <p data-c="footer.newsText">One short lesson in your inbox every week.</p>
-        <form class="news" id="newsForm">
-          <input type="email" required placeholder="Your email" aria-label="Email" />
-          <button aria-label="Subscribe"><i class="ri-send-plane-fill"></i></button>
-        </form>
-        <small class="news__msg" id="newsMsg"></small>
+        <h4 data-c="footer.communityTitle">Join our community</h4>
+        <p data-c="footer.communityText">Free English tips, events and news, straight to your phone.</p>
+        <div class="community">
+          <a href="#" class="community__btn community__btn--wa" data-social="whatsappGroup"><i class="ri-whatsapp-line"></i> <span data-i18n="community.wa">Join on WhatsApp</span></a>
+          <a href="#" class="community__btn community__btn--tg" data-social="telegram"><i class="ri-telegram-line"></i> <span data-i18n="community.tg">Join on Telegram</span></a>
+        </div>
       </div>
     </div>
     <div class="container footer__bottom">
-      <span>© <span id="year">2026</span> Tawer Academy. All rights reserved.</span>
-      <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+      <span>© <span id="year">2026</span> Tawer Academy. <span data-i18n="footer.rights">All rights reserved.</span></span>
+      <span><a href="#" data-i18n="footer.privacy">Privacy</a> · <a href="#" data-i18n="footer.terms">Terms</a></span>
     </div>
   </footer>
 
-  <a href="#" class="wa-float" data-wa aria-label="Chat on WhatsApp"><i class="ri-whatsapp-line"></i></a>
-  <button class="totop" id="totop" aria-label="Back to top"><i class="ri-arrow-up-line"></i></button>
+  <a href="#" class="wa-float" data-wa aria-label="Chat on WhatsApp" data-i18n-attr="aria-label:a11y.whatsapp"><i class="ri-whatsapp-line"></i></a>
+  <button class="totop" id="totop" aria-label="Back to top" data-i18n-attr="aria-label:a11y.top"><i class="ri-arrow-up-line"></i></button>
   <div class="toast" id="toast" role="status"></div>
 
-  <script src="content.js"></script>
-  <script src="site.js"></script>
+  <script src="/content.js"></script>
+  <script src="/site.js"></script>
 </body>
 </html>

@@ -1,79 +1,69 @@
 # Tawer Academy
 
 The Tawer Academy website plus a password-protected admin dashboard (`/admin`) for editing the site's text.
-It runs on **Cloudflare Pages** (free plan): static site, small serverless API, and Cloudflare KV storage for the saved content.
+Built with **Next.js** (App Router). Saved content is stored in a **Neon** Postgres database.
 
 ```
-public/              ← everything served to visitors
-  index.html         the website
-  style.css
-  site.js            renders the page from the content
-  content.js         DEFAULT content (used until the admin saves for the first time)
-  admin/             the admin dashboard (index.html, admin.js, admin.css)
-  _headers           security / caching headers
-functions/           ← server code (Cloudflare Pages Functions, not public)
-  index.js           serves "/" with the saved content applied (good for Google & link previews)
-  api/login.js       POST   /api/login     password → session cookie (5 wrong tries = 15 min lock)
-  api/logout.js      POST   /api/logout
-  api/session.js     GET    /api/session
-  api/content.js     GET    /api/content   (public)   ·   PUT /api/content (admin only)
-  api/history.js     GET    /api/history   last 10 saved versions (admin only)
-  _shared/lib.js     helpers (auth, formatting)
+app/                   ← Next.js routes
+  content.js/route.js  GET  /content.js   the default content (data/*.json) for the browser
+  route.js             GET  /             the website, with the saved content applied on the server (good for Google & link previews)
+  admin/route.js       GET  /admin        the content dashboard
+  api/login/route.js   POST /api/login    password → session cookie (5 wrong tries = 15 min lock)
+  api/logout/route.js  POST /api/logout
+  api/session/route.js GET  /api/session
+  api/content/route.js GET  /api/content  (public)   ·   PUT /api/content (admin only)
+  api/history/route.js GET  /api/history  last 10 saved versions (admin only)
+lib/                   ← server helpers
+  db.js                Neon queries (tables are created automatically on first use)
+  auth.js              admin session cookie, request checks
+  content.js           which content sections may be saved + validation
+  render.js            fills the saved text into templates/home.html
+  format.js            [[highlight]] / **bold** formatting (must match public/site.js)
+data/                  ← DEFAULT content (used for anything not saved from the dashboard yet)
+  content.en.json      English (also the structure: lists, numbers, photos, links)
+  content.ar.json      Arabic translation (same shape, text only)
+templates/             ← the page markup
+  home.html            the website
+  admin.html           the dashboard
+public/                ← static files served as-is
+  style.css            site styles
+  site.js              renders the page sections from the content
+  admin/               dashboard script and styles (admin.js, admin.css)
 ```
+
+## Setup
+
+1. Install [Node.js](https://nodejs.org) 20 or newer.
+2. `npm install`
+3. Copy `.env.example` to `.env` and fill it in:
+   - `DATABASE_URL`: your Neon connection string (Neon dashboard → **Connect** → copy the string).
+   - `ADMIN_PASSWORD`: the dashboard password (12+ characters).
+   - `SESSION_SECRET` (optional): signs admin sessions. If it's not set, the admin password is used.
+4. `npm run dev`, then open <http://localhost:3000> for the site and <http://localhost:3000/admin> for the dashboard.
+
+For production: `npm run build`, then `npm start`. Any Node.js host that runs Next.js works (for example Vercel, which
+pairs well with Neon). Set the same environment variables on the host.
+
+Changing `ADMIN_PASSWORD` (or `SESSION_SECRET`) logs out every open admin session.
 
 ## How content works
 
-- `public/content.js` holds the default content. Saving from the dashboard stores the full content in KV (key `content`).
-  The previous version goes to `history` (last 10 kept, can be restored from **History** in the dashboard).
-- Saved content always wins over `content.js`. Fields missing from the saved version come from `content.js`, so new
+- **Where text comes from:** the database first; anything not saved there comes from the JSON files in `data/`
+  (see `data/README.md`). Saving from the dashboard stores the full content in the database
+  (table `site_content`). The previous version goes to `content_history` (last 10 kept, and they can be restored
+  from **History** in the dashboard).
+- Saved content always wins over the JSON files. Fields missing from the saved version come from the JSON files, so new
   fields added to the code later show up automatically.
 - Text fields support `[[words]]` (highlight colour), `**words**` (bold) and line breaks. Everything else is escaped,
   so typing HTML into the dashboard can't break or hijack the page.
-- **Images are not editable** from the dashboard (by design). Existing items keep their photo; new courses / levels / posts get a
-  standard photo, new teachers / reviews show initials. To change photos, edit the `img` IDs in `public/content.js`
-  (Unsplash photo IDs) or the image URLs in `public/index.html`.
+- **Images are not editable** from the dashboard (by design). Existing items keep their photo. New courses, levels and
+  posts get a standard photo, and new stories and reviews show initials. To change photos, edit the `img` IDs in
+  `data/content.en.json` (Unsplash photo IDs) or the image URLs in `templates/home.html`.
+- If two people edit at once, the second save is refused with a message to reload, so nobody silently overwrites
+  someone else's changes.
 
-## Deploy (one time, ~15 minutes)
+## Adding a new section
 
-1. **Cloudflare account**: sign up free at <https://dash.cloudflare.com>.
-2. **Create the KV namespace**: *Storage & Databases → KV → Create* → name it `tawer-content`.
-3. **Create the Pages project**: *Workers & Pages → Create → Pages → Connect to Git* → pick `SAMAtech-lb/Tawer`.
-   - Production branch: `main` (or `admin-dashboard` while testing)
-   - Framework preset: **None** · Build command: *(empty)* · Build output directory: **`public`**
-4. **Settings of the Pages project**:
-   - *Settings → Bindings → Add → KV namespace*: variable name **`CONTENT`**, namespace `tawer-content`.
-   - *Settings → Variables and secrets → Add* (type **Secret**): **`ADMIN_PASSWORD`** = a long password (12+ characters).
-   - Add both for **Production** (and Preview if you use preview deployments).
-5. **Redeploy** (*Deployments → … → Retry deployment*) so the binding and secret take effect.
-6. Open `https://<project>.pages.dev/admin`, log in, edit, **Save & publish**.
-
-Changing `ADMIN_PASSWORD` logs out every open admin session.
-
-## Connect the GoDaddy domain
-
-Recommended: move DNS to Cloudflare (the domain stays registered and paid at GoDaddy).
-
-1. Cloudflare dashboard → *Add a domain* → enter `tawer-academy.com` → Free plan. Cloudflare shows two nameservers.
-2. GoDaddy → *My Products → Domain → DNS → Nameservers → Change → "I'll use my own nameservers"* → paste the two Cloudflare nameservers.
-   (Takes a few minutes to a few hours.)
-3. Cloudflare → *Workers & Pages → your project → Custom domains → Set up a custom domain* → add `www.tawer-academy.com`
-   and `tawer-academy.com`. Cloudflare creates the DNS records and the HTTPS certificate automatically.
-
-Alternative without moving DNS: in GoDaddy DNS add a `CNAME` record `www → <project>.pages.dev`, add `www.tawer-academy.com`
-as a custom domain in Pages, and use GoDaddy's domain forwarding for the bare domain → `https://www.tawer-academy.com`.
-
-## Run locally
-
-```bash
-npm install
-cp .dev.vars.example .dev.vars   # then set ADMIN_PASSWORD inside it
-npm run dev                      # http://127.0.0.1:8788  and  http://127.0.0.1:8788/admin
-```
-
-Local saves go to a local KV store in `.wrangler/` (not to the live site).
-Opening `public/index.html` directly in the browser also works, but shows only the default content and the dashboard won't work.
-
-## Free-plan limits (more than enough for one admin)
-
-KV free tier: 100,000 reads/day (about one per page view) and 1,000 writes/day (each save = 2 writes).
-After a save, visitors in other regions can take up to ~60 seconds to see the change (KV propagation).
+A new content section touches 5 places: `data/content.en.json` + `data/content.ar.json` (default text), `templates/home.html` (markup with
+`data-c="group.field"`), `public/site.js` (lists), `public/admin/admin.js` (editor) and `CONTENT_GROUPS` in
+`lib/content.js`.

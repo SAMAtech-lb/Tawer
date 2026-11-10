@@ -109,7 +109,7 @@ input, select, textarea { accent-color: var(--purple); caret-color: var(--purple
 .burger { display: none; width: 44px; height: 44px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); font-size: 22px; }
 
 /* Hero */
-.hero { position: relative; padding: 70px 0 90px; background: linear-gradient(180deg, var(--light), #fff); overflow: hidden; }
+.hero { position: relative; padding: 70px 0 90px; background: var(--white); overflow: hidden; }
 .hero .container { display: grid; grid-template-columns: 1.05fr 1fr; gap: 60px; align-items: center; }
 .hero h1 { position: relative; z-index: 0; font-size: clamp(40px, 5.2vw, 66px); font-weight: 700; letter-spacing: -.035em; margin-bottom: 22px; }
 .hl { position: relative; color: var(--primary); white-space: nowrap; }
@@ -287,7 +287,7 @@ input, select, textarea { accent-color: var(--purple); caret-color: var(--purple
 .stats > div:nth-child(odd) b { color: var(--gold); }
 
 /* Success stories: auto-scrolling row */
-.marquee { overflow: hidden; padding: 10px 0 24px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee { overflow: hidden; padding: 10px 0 24px; -webkit-mask-image: linear-gradient(90deg, transparent, #6A0DAD 8%, #6A0DAD 92%, transparent); mask-image: linear-gradient(90deg, transparent, #6A0DAD 8%, #6A0DAD 92%, transparent); }
 .marquee__track { display: flex; width: max-content; animation: marquee 50s linear infinite; }
 .marquee:hover .marquee__track, .marquee:focus-within .marquee__track, .marquee__track.is-paused { animation-play-state: paused; }
 .marquee__ctrl { display: flex; justify-content: center; margin-top: 8px; }
@@ -425,6 +425,17 @@ input, select, textarea { accent-color: var(--purple); caret-color: var(--purple
 .chips span:hover { border-color: var(--primary); }
 .chips input:checked + span { background: var(--primary); border-color: var(--primary); color: #fff; }
 .chips input:focus-visible + span { box-shadow: 0 0 0 3px rgba(106,13,173,.25); }
+/* WhatsApp-first contact + the two request forms */
+.contact__wa { margin: 0 0 30px; }
+.request__label { font-family: var(--head); font-weight: 600; color: var(--dark); margin-bottom: 12px; }
+.request__tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; background: var(--light); border: 1px solid var(--line); border-radius: 16px; margin-bottom: 16px; }
+.request__tabs button { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 10px; border-radius: 12px; font-weight: 600; font-size: 15px; color: var(--dark); transition: background .2s, color .2s; }
+.request__tabs button:hover { background: var(--white); }
+.request__tabs button.active { background: var(--primary); color: var(--white); box-shadow: 0 6px 16px rgba(106,13,173,.25); }
+.form__intro { font-size: 15px; margin-top: -4px; }
+.form textarea { resize: vertical; }
+/* Spam trap: invisible to people, filled in by bots */
+.hp { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; border: 0 !important; overflow: hidden; clip-path: inset(50%); opacity: 0; }
 .form__msg { font-size: 15px; display: none; }
 .form__msg.ok, .form__msg.bad { display: block; padding: 12px 16px; border-radius: 12px; }
 .form__msg.ok { background: var(--primary-soft); color: var(--primary); }
@@ -441,12 +452,13 @@ input, select, textarea { accent-color: var(--purple); caret-color: var(--purple
 .footer__grid > div > a { display: block; margin-bottom: 10px; font-size: 15px; transition: color .2s, padding .2s; }
 .footer__grid > div > a:hover { color: var(--gold); padding-left: 4px; }
 .footer__grid > div > p { font-size: 15px; margin-bottom: 14px; }
-.news { display: flex; background: rgba(255,255,255,.07); border-radius: 14px; padding: 5px; }
-.news input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: #fff; font: inherit; padding: 0 12px; }
-.news input::placeholder { color: rgba(255,255,255,.45); }
-.news button { width: 44px; height: 44px; border-radius: 10px; background: var(--accent); color: #fff; font-size: 18px; transition: background .2s; }
-.news button:hover { background: var(--gold); color: var(--primary); }
-.news__msg { display: block; margin-top: 10px; color: var(--gold); }
+/* Community (replaces the newsletter) */
+.community { display: flex; flex-wrap: wrap; gap: 10px; }
+.community__btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 12px; font-weight: 600; font-size: 15px; transition: background .2s, color .2s, transform .2s; }
+.community__btn i { font-size: 20px; }
+.community__btn--wa { background: var(--accent); color: var(--white); }
+.community__btn--tg { background: var(--white); color: var(--primary); }
+.community__btn:hover { background: var(--gold); color: var(--primary); transform: translateY(-2px); }
 .footer__bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 24px 0; border-top: 1px solid rgba(255,255,255,.1); font-size: 14px; }
 .footer__bottom a:hover { color: var(--gold); }
 
@@ -528,4 +540,66 @@ input, select, textarea { accent-color: var(--purple); caret-color: var(--purple
   .footer__grid { grid-template-columns: 1fr; }
   .wa-float { width: 50px; height: 50px; font-size: 24px; left: 16px; bottom: 16px; }
   .totop { right: 16px; bottom: 16px; }
+}
+
+/* ===================== Language switch ===================== */
+.lang-switch { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; border-radius: 12px; border: 1.5px solid var(--line); font-weight: 600; font-size: 14.5px; color: var(--primary); transition: border-color .2s, background .2s; }
+.lang-switch i { font-size: 17px; }
+.lang-switch:hover { border-color: var(--primary); background: var(--primary-soft); }
+.lang-switch span { font-family: "Cairo", var(--head); }
+html[lang="ar"] .lang-switch span { font-family: var(--head); }
+
+/* ===================== Arabic / right-to-left ===================== */
+/* Arabic fonts: Cairo (headings) and Tajawal (body). Both also contain Latin letters. */
+html[lang="ar"] { --head: "Cairo", "Lexend", system-ui, sans-serif; --body: "Tajawal", "DM Sans", system-ui, sans-serif; }
+html[lang="ar"] body { font-size: 17px; line-height: 1.75; }
+html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3, html[lang="ar"] h4 { letter-spacing: 0; line-height: 1.35; }
+html[lang="ar"] .label, html[lang="ar"] .logo__text small { letter-spacing: 0; }
+/* The logo and English-only bits (placement-test questions, emails, phone numbers) stay left-to-right */
+[dir="rtl"] .logo, [dir="rtl"] [lang="en"] { direction: ltr; }
+[dir="rtl"] .quiz__q, [dir="rtl"] .quiz__opts button[lang="en"] { text-align: left; }
+/* Directional arrows point the other way */
+[dir="rtl"] .ri-arrow-right-line, [dir="rtl"] .ri-arrow-left-line, [dir="rtl"] .ri-arrow-right-up-line, [dir="rtl"] .ri-send-plane-line, [dir="rtl"] .ri-send-plane-fill { display: inline-block; transform: scaleX(-1); }
+/* Header and navigation */
+[dir="rtl"] .nav { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .nav a:not(.nav__cta)::after { left: auto; right: 0; }
+/* Success-stories row scrolls the other way */
+@keyframes marquee-rtl { to { transform: translateX(50%); } }
+[dir="rtl"] .marquee__track { animation-name: marquee-rtl; }
+[dir="rtl"] .story { margin-right: 0; margin-left: 24px; }
+@media (max-width: 991px) {
+  [dir="rtl"] .header__right { margin-left: 0; margin-right: auto; }
+}
+@media (max-width: 640px) {
+  [dir="rtl"] .story { margin-left: 16px; margin-right: 0; }
+}
+/* Each text block takes its direction from its own content: Arabic reads right-to-left, while English
+ * (untranslated fields fall back to English) keeps correct punctuation, e.g. "answers." not ".answers". */
+[dir="rtl"] :is(h1, h2, h3, h4, p, li, blockquote, summary, small, b, label, legend, figcaption, .label, .course__lvl, .story__result span, .plan__tag, .course__badge) { unicode-bidi: plaintext; }
+/* Numbers with a suffix/prefix (2,500+ · 96% · $89) stay in their written order */
+[dir="rtl"] :is(.stats b, .about__badge b, .course__price, .plan__price b, .story__result b, .rating b) { direction: ltr; unicode-bidi: isolate; }
+/* Arabic labels are longer: keep the navigation on one line */
+[dir="rtl"] .nav { gap: 18px; font-size: 15px; }
+[dir="rtl"] .nav a, [dir="rtl"] .link-test, [dir="rtl"] .header__right .btn { white-space: nowrap; }
+/* "Find my level" is already in the Arabic menu ("placement test"), so the duplicate header link is dropped */
+[dir="rtl"] .link-test { display: none; }
+[dir="rtl"] .header .container { gap: 24px; }
+@media (max-width: 1199px) {
+  [dir="rtl"] .nav { gap: 13px; font-size: 14px; }
+  [dir="rtl"] .header .container { gap: 16px; }
+  [dir="rtl"] .header__right { gap: 10px; }
+  [dir="rtl"] .header__right .btn { padding: 11px 16px; font-size: 14px; }
+  [dir="rtl"] .lang-switch { padding: 0 10px; }
+}
+/* Phone numbers and emails always read left-to-right */
+[dir="rtl"] :is([data-c="contact.phone"], [data-c="contact.email"], [data-c="contact.hours"], input[type="tel"], input[type="email"]) { direction: ltr; unicode-bidi: isolate; }
+[dir="rtl"] :is(input[type="tel"], input[type="email"]) { text-align: right; }
+@media (max-width: 991px) {
+  /* The menu button sits on the left in Arabic, so the menu slides in from the left */
+  [dir="rtl"] .nav { right: auto; left: 0; transform: translateX(-100%); box-shadow: 20px 0 50px rgba(106,13,173,.15); }
+  [dir="rtl"] .nav.open { transform: none; }
+}
+@media (max-width: 640px) {
+  .request__tabs button { font-size: 13.5px; padding: 10px 6px; gap: 6px; }
+  .contact__wa { width: 100%; }
 }
