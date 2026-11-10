@@ -24,6 +24,10 @@ The project rules here (strict palette, "don't change the design" requests) outr
   uses the system **Edge** via `AGENT_BROWSER_EXECUTABLE_PATH`, set in
   [.claude/settings.local.json](.claude/settings.local.json) (machine-specific and git-ignored).
   Outside Claude Code, pass `--executable-path "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"`.
+- **SEO skills** (`seo` + 32 `seo-*`, Claude SEO v2.5.0 by AgriciDaniel, github.com/AgriciDaniel/claude-seo, MIT) are
+  copied into [.claude/skills/](.claude/skills/) without their runtime. Their scripts run through the **global**
+  install: `"$HOME/.claude/skills/seo/scripts/claude-seo"` (Python venv + Chromium, 1.4 GB, git-ignored). On a new
+  machine, install Claude SEO globally once, then `/seo setup`. Use `/seo audit`, `/seo schema`, `/seo geo`… for SEO work.
 - Fallback if agent-browser fails: headless Edge screenshots
   (`msedge --headless=new --screenshot=<file> --window-size=1440,12000 <url>`).
 
@@ -339,4 +343,6 @@ dashboard once deployed. Stories are in `stories.items`, testimonials in `review
   - Still open (needs the client): real domain, phone/WhatsApp, social/community links, privacy/terms pages, blog
     posts (all `#` now), real review numbers, country/cities served, a PNG logo; separate pages per course/blog post
     would let the site rank for more than the home page.
-
+- **2026-11-10** — Added the 33 Claude SEO skills to the project's [.claude/skills/](.claude/skills/) (copied from the
+  global install, 2.5 MB; the 1.4 GB Python/Chromium runtime was left out and is git-ignored). Not in skills-lock.json
+  (that file belongs to the `npx skills` CLI); the source is noted under *Tooling installed*.
